@@ -2,6 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from root_paper_lab.core import Run, archive_pdf, build_graph, canonical
+from root_paper_lab.venues import _clean, classify_venue, relevance
 
 
 def paper(pid, doi=None):
@@ -67,6 +68,31 @@ class ArchiveTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaises(ValueError):
                 Run(tmp, "mixed", {})
+
+
+class VenueTests(unittest.TestCase):
+    def test_inline_html_does_not_damage_title(self):
+        self.assertEqual(_clean("G <span>-</span> Safeguard and LLM<span>s</span>"), "G-Safeguard and LLMs")
+
+    def test_bk21_versioned_classification(self):
+        acl = classify_venue("acl")
+        self.assertEqual(acl["tier"], "Top-tier")
+        self.assertEqual(acl["effective_if"], 4)
+        self.assertIn("2018", acl["latest_official_status"])
+        self.assertEqual(classify_venue("naacl")["tier"], "2nd-Tier")
+        self.assertFalse(classify_venue("iclr")["listed"])
+
+    def test_paper_type_is_separate_from_venue_tier(self):
+        self.assertEqual(classify_venue("acl", "short")["effective_if"], 3)
+        self.assertIsNone(classify_venue("acl", "poster")["effective_if"])
+        self.assertIsNone(classify_venue("acl", "findings")["effective_if"])
+        self.assertFalse(classify_venue("acl", "poster")["top_tier_eligible"])
+        self.assertTrue(classify_venue("acl", "regular")["top_tier_eligible"])
+
+    def test_relevance_is_not_quality(self):
+        result = relevance({"title": "Secure language agents", "abstract": "agent security", "keywords": []}, "agent DNS")
+        self.assertEqual(result["matched_terms"], ["agent"])
+        self.assertIn("품질 점수", result["score_note"])
 
 
 if __name__ == "__main__":

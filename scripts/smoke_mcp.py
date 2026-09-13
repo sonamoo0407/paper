@@ -13,7 +13,8 @@ async def main():
             await session.initialize()
             result = await session.list_tools()
             names = [t.name for t in result.tools]
-            assert len(names) == 6, names
+            assert len(names) == 7, names
+            assert "collect_top_venue_papers" in names, names
             gate = await session.call_tool("analyze_root_paper", {
                 "track": "ai", "pdf_manifest": "not-read", "question": "test", "llm": "unset", "embedding": "unset"})
             assert not gate.isError

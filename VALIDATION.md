@@ -1,5 +1,13 @@
 # 검증 기록 — 2026-09-11
 
+## 2026-09-14 탑티어 수집기 1차 튜닝
+
+- `LikeACloud7/ai-trend` revision `e20dfc1eebff33c0ce635f26be70cce82ae6bacd`의 MIT 라이선스와 수집 구조를 검토했다.
+- 공식 ACL Anthology/OpenReview 수집, 원문 응답 스냅샷·SHA-256·검색 시각 저장, BK21+ 2018 판본 대조, 논문 유형 분리, 키워드 후보 정렬을 `collect_top_venue_papers`로 추가했다.
+- ACL 2025 공식 이벤트 색인에서 `agent security` 소규모 시험: HTTP 200, 공식 색인 논문 3,087편 파싱, 상위 후보 3편 반환. 세 후보는 ACL Regular, BK21+ 2018 Top-tier/IF 4로 기록됐다.
+- 해당 실데이터 시험에서 PDF 다운로드·PaperQA·논문 코드 실행은 하지 않았다. 보안 4개 학회 공식 수집기는 아직 미구현이며 상태를 `collector_not_implemented`로 반환한다.
+- 단위·통합 테스트 18개와 MCP stdio 스모크 테스트를 통과했다. 새 MCP 도구를 포함해 노출 도구는 7개다.
+
 ## 확인된 것
 
 - Scholar Search MCP 원본 다운로드: commit `1392e7e6f483bb2fdbef42e37610b82620612ee7`.

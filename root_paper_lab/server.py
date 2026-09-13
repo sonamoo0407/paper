@@ -9,6 +9,7 @@ from mcp.server.fastmcp import FastMCP
 
 from .core import Run, archive_pdf, archive_pdf_bytes, build_graph, graph_report, now
 from .scholar import Scholar
+from .venues import VENUES, VenueCollector, classify_venue, relevance
 
 BASE = Path(os.environ.get("ROOT_PAPER_DATA", str(Path(__file__).resolve().parents[1] / "runs"))).resolve()
 IMPORT = Path(os.environ.get("ROOT_PAPER_IMPORT", str(Path(__file__).resolve().parents[1] / "inbox"))).resolve()
@@ -39,6 +40,67 @@ async def research_search(track: str, query: str, limit: int = 10, year: str = "
                   "selection_reason": "검색식 일치 후보; 포함/제외 검토 필요"})
     run.write("search.json", result)
     return {"run": str(run.path), "result": result}
+
+
+@mcp.tool()
+async def collect_top_venue_papers(track: str, query: str, venues_csv: str = "",
+                                   year_start: int = 2024, year_end: int = 2026,
+                                   max_results: int = 50, top_tier_only: bool = True) -> dict:
+    """Collect candidates from official accepted-paper indexes, then apply the dated BK21+ 2018 venue baseline.
+
+    Relevance is transparent lexical matching, not paper quality. Official index evidence, venue-list
+    classification, and paper-type eligibility are independent fields. No PDF or paper code is downloaded.
+    """
+    if track not in {"ai", "cybersecurity"}:
+        raise ValueError("track must be ai or cybersecurity")
+    if not query.strip() or len(query) > 2000:
+        raise ValueError("query required (max 2000 chars)")
+    if not 2018 <= year_start <= year_end <= 2100 or year_end - year_start > 5:
+        raise ValueError("year range must be 2018..2100 and span at most 5 years")
+    if not 1 <= max_results <= 200:
+        raise ValueError("max_results must be 1..200")
+    defaults = "acl,emnlp,icml,neurips" if track == "ai" else "ccs,sp,usenix_security,ndss"
+    venues = list(dict.fromkeys(v.strip().lower() for v in (venues_csv or defaults).split(",") if v.strip()))
+    if not venues or len(venues) > 10:
+        raise ValueError("provide 1..10 venue keys")
+    for venue in venues:
+        config = VENUES.get(venue)
+        if not config or config["track"] != track:
+            raise ValueError(f"venue {venue!r} is unsupported or belongs to another track")
+
+    request = {"operation": "official_venue_collection", "query": query, "venues": venues,
+               "year_start": year_start, "year_end": year_end, "max_results": max_results,
+               "top_tier_only": top_tier_only,
+               "classification_note": "BK21+ 2018 역사적 기준선; 최신 기준이나 개별 논문 품질 점수 아님"}
+    run = Run(BASE, track, request)
+    collector = VenueCollector(run)
+    papers, statuses = [], []
+    for venue in venues:
+        for year in range(year_start, year_end + 1):
+            try:
+                collected, status = await collector.collect(venue, year)
+                statuses.append(status)
+                for paper in collected:
+                    paper["bk21"] = classify_venue(venue, paper["publication_type"])
+                    paper["relevance"] = relevance(paper, query)
+                    if not paper["relevance"]["matched_terms"]:
+                        continue
+                    if top_tier_only and not paper["bk21"]["top_tier_eligible"]:
+                        continue
+                    paper["selection"] = "candidate"
+                    paper["selection_reason"] = "공식 색인 확인 + 검색어 일치; 본문 적합성과 최종 포함 여부 검토 필요"
+                    papers.append(paper)
+            except Exception as e:
+                statuses.append({"venue": venue, "year": year, "status": "error",
+                                 "error_type": type(e).__name__, "official_publication_verified": False})
+    papers.sort(key=lambda p: (-p["relevance"]["relevance_score"], -p["year"], p["title"]))
+    truncated = len(papers) > max_results
+    papers = papers[:max_results]
+    result = {"status": "completed_with_failures" if any(s["status"] in {"error", "collector_not_implemented"} for s in statuses) else "completed",
+              "papers": papers, "sources": statuses, "result_truncated": truncated,
+              "count": len(papers), "paperqa_run": False, "pdf_downloaded": False}
+    run.write("venue-search.json", result)
+    return {"run": str(run.path), **result}
 
 
 @mcp.tool()

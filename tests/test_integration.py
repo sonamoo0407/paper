@@ -42,8 +42,19 @@ class IntegrationTests(unittest.IsolatedAsyncioTestCase):
         tools = await server.mcp.list_tools()
         names = {t.name for t in tools}
         self.assertIn("trace_root_papers", names)
+        self.assertIn("collect_top_venue_papers", names)
         self.assertIn("analyze_root_paper", names)
         self.assertNotIn("download_arxiv_source", names)
+
+    async def test_venue_collection_validates_track_before_network(self):
+        with self.assertRaises(ValueError):
+            await server.collect_top_venue_papers("ai", "security", "ccs", 2024, 2024, 5)
+
+    async def test_pending_security_collector_reports_failure(self):
+        with tempfile.TemporaryDirectory() as tmp, patch.object(server, "BASE", Path(tmp)):
+            result = await server.collect_top_venue_papers("cybersecurity", "security", "ccs", 2024, 2024, 5)
+            self.assertEqual(result["status"], "completed_with_failures")
+            self.assertEqual(result["sources"][0]["status"], "collector_not_implemented")
 
     async def test_paperqa_adapter_mocked_model(self):
         from paperqa import Docs

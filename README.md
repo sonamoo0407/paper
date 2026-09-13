@@ -4,6 +4,7 @@ Hermes Agent가 자연어 요청을 해석하고, 이 프로그램의 MCP 도구
 
 ## 포함 기능
 
+- `collect_top_venue_papers`: ACL Anthology·OpenReview의 공식 합격 논문 색인에서 AI 후보를 수집하고, BK21+ 2018 판본의 원래 등급과 논문 유형 적용 상태를 별도로 기록. 현재 1차 구현은 ACL·EMNLP·NAACL·ICLR·ICML·NeurIPS이며 보안 학회 수집기는 후속 단계.
 - `research_search`: 트랙별 검색식·UTC 시각·원 응답 저장. 현재 검색 공급자는 Semantic Scholar이며 arXiv 통합 검색은 노출하지 않음.
 - `trace_root_papers`: 참고문헌 최대 3단계, 중복·순환 처리, 출발 논문별 경로, 공통 루트 후보 순서화. 품질 점수 아님.
 - `download_root_pdf`: 지정 공개 호스트 PDF 다운로드·SHA-256. 로그인·압축파일·코드 실행 없음.
@@ -34,6 +35,8 @@ python -m venv .venv
 
 ## 사용 예
 
+디스코드에서: “AI 트랙에서 2024~2026년 ACL, EMNLP, ICML, NeurIPS의 agent security 관련 공식 게재 논문을 모아줘. BK21+ 2018 기준과 논문 유형을 분리해서 표시하고 최대 20편만 후보로 저장해줘.”
+
 디스코드에서: “사이버보안 트랙으로 DNS 터널링 탐지 논문 후보를 찾아줘. 공식 게재를 검토해 출발 논문 3편을 정하고, 깊이 2에서 공통 루트논문 후보를 찾아줘. PDF는 보존하고 분석 모델·비용을 확인한 다음 1편만 PaperQA로 분석해줘.”
 
 DNS는 기능 사용 예시이며 확정 연구 주제가 아니다. 검색 키워드는 공개 검색 서비스로 전달되므로 비공개 연구 내용·비밀을 넣지 않는다.
@@ -48,6 +51,7 @@ DNS는 기능 사용 예시이며 확정 연구 주제가 아니다. 검색 키�
 
 ## 원본
 
+- AI Research Trend Atlas: https://github.com/LikeACloud7/ai-trend — commit `e20dfc1eebff33c0ce635f26be70cce82ae6bacd`, MIT. 공식 ACL Anthology/OpenReview 수집 구조를 참고해 Python·감사기록·BK21 분리 판정 방식으로 수정. 자세한 내용은 `THIRD_PARTY_NOTICES.md`.
 - Scholar Search MCP: https://github.com/Silung/scholar-search-mcp — commit `1392e7e6f483bb2fdbef42e37610b82620612ee7`, MIT, 원본은 vendor에 보존.
 - PaperQA: https://github.com/Future-House/paper-qa — tag `v2026.08.12`, commit `57e89f7223b0960d5ee5ea048c69e3c47e088572`, Apache-2.0, 원본은 vendor에 보존. 실행용 패키지는 고정 버전 설치.
 - Hermes MCP: https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp/
