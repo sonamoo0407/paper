@@ -31,7 +31,9 @@ python -m venv .venv
 
 서버 실행 명세: command는 해당 가상환경 Python의 절대 경로, args는 `-m root_paper_lab.server`. 선택 환경변수 `ROOT_PAPER_DATA`는 결과 저장 폴더, `ROOT_PAPER_IMPORT`는 PDF 입력 폴더다. 기본값은 프로젝트의 runs, inbox다. 비밀정보는 이 파일이나 MCP 호출 인자에 넣지 않는다.
 
-운영 규칙은 `skills/root-paper-research/SKILL.md`다. 확인된 Hermes 스킬 설치 위치에 복사하되 같은 이름이 있으면 덮어쓰지 말고 비교한다. 실제 Hermes 등록은 아직 수행하지 않았다.
+운영 규칙은 `skills/root-paper-research/SKILL.md`다. 확인된 Hermes 스킬 설치 위치에 복사하되 같은 이름이 있으면 덮어쓰지 말고 비교한다. 2026-09-14 Hermes 등록·Gateway 재시작·7개 도구 연결과 실제 수집 호출을 확인했다. 운영 검증의 출처와 한계는 `docs/operations-20260914.md`를 참조한다.
+
+운영에서는 `ROOT_PAPER_DATA`를 코드 checkout 밖의 고정 절대경로로 지정한다. 프로그램을 업데이트해도 이 경로를 유지하고, 재시작 후 실제 프로세스의 환경변수와 반환된 run 경로를 함께 확인한다. 연구 보고의 상세 출력·다단계 추적 요구사항은 `docs/research-report-requirements.md`에 기록했다.
 
 ## 사용 예
 
