@@ -2,7 +2,7 @@
 
 - 작성일: 2026-09-14
 - 범위: 공개 PDF 5편과 참고문헌 역추적 기록의 공개용 분석 요약
-- 데이터 경로 표기: `${RESEARCH_DATA}/runs/cybersecurity/...`
+- 데이터 경로 표기: `${RESEARCH_DATA}/cybersecurity/...` (`RESEARCH_DATA`는 `ROOT_PAPER_DATA`로 지정한 실행 결과 루트)
 - 안전 경계: 출판된 원문 PDF, 원문 HTML, 검색 API 원응답, 환경 설정·인증 정보는 이 문서와 함께 공개하지 않는다.
 
 ## 핵심 구분
@@ -82,4 +82,4 @@
 - PaperQA 외부 모델·임베딩 호출: **미실행**
 - 논문 코드·설치 스크립트 실행: **미실행**
 - 공개 PDF 보존 및 SHA-256 기록: 실행됨(로컬 연구 데이터에만 보존)
-- 상세 로컬 분석: `${RESEARCH_DATA}/runs/cybersecurity/mitre_attack_report_20260914T122700Z/`
+- 상세 로컬 분석: `${RESEARCH_DATA}/cybersecurity/mitre_attack_report_20260914T122700Z/`
