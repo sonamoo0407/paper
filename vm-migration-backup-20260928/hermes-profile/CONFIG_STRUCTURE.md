@@ -1,0 +1,173 @@
+# Hermes 설정 구조(값 제외)
+
+```text
+- model
+  - default
+  - provider
+  - base_url
+- database
+  - journal_mode
+- runtime
+  - nofile_soft_limit
+- agent
+  - max_turns
+  - verbose
+  - reasoning_effort
+  - personalities
+- terminal
+  - backend
+  - cwd
+  - timeout
+  - home_mode
+  - container_cpu
+  - container_memory
+  - container_disk
+  - container_persistent
+  - docker_mount_cwd_to_workspace
+  - lifetime_seconds
+- browser
+  - inactivity_timeout
+  - extension_control
+    - enabled
+- tool_loop_guardrails
+  - warnings_enabled
+  - hard_stop_enabled
+  - warn_after
+    - exact_failure
+    - same_tool_failure
+    - idempotent_no_progress
+  - hard_stop_after
+    - exact_failure
+    - same_tool_failure
+    - idempotent_no_progress
+- compression
+  - enabled
+  - checkpoint_required
+  - progress_notices
+  - threshold
+  - target_ratio
+  - protect_last_n
+  - min_tail_user_messages
+  - max_attempts
+  - proactive_prune_tokens  # value omitted / sensitive-name key
+  - proactive_prune_min_result_chars
+  - proactive_prune_min_reclaim_tokens  # value omitted / sensitive-name key
+  - protect_first_n
+  - codex_gpt55_autoraise
+  - codex_app_server_auto
+  - codex_responses_native
+  - idle_compact_after_seconds
+- prompt_caching
+  - cache_ttl
+- display
+  - compact
+  - busy_input_mode
+  - bell_on_complete
+  - show_reasoning
+  - background_process_notifications
+  - streaming
+  - skin
+  - interim_assistant_messages
+  - tool_progress
+  - cleanup_progress
+  - long_running_notifications
+  - busy_ack_detail
+- stt
+  - enabled
+  - language
+  - local
+    - model
+  - openai
+    - model
+    - language
+- memory
+  - memory_enabled
+  - user_profile_enabled
+  - memory_char_limit
+  - user_char_limit
+  - nudge_interval
+- delegation
+  - max_iterations
+- skills
+  - creation_nudge_interval
+- discord
+  - require_mention
+  - allowed_channels
+  - auto_thread
+- command_allowlist
+- kanban
+  - review_dispatch
+- code_execution
+  - timeout
+  - max_tool_calls
+- gateway
+  - signal_interrupt_grace_timeout
+  - delivery_ledger
+  - platform_connect_timeout
+  - loop_watchdog
+  - loop_watchdog_probe_interval_s
+  - loop_watchdog_probe_timeout_s
+  - loop_watchdog_max_strikes
+  - startup_watchdog
+  - startup_watchdog_timeout_seconds
+  - write_sessions_json
+  - scale_to_zero
+    - idle_timeout_minutes
+  - restart_loop_guard
+    - max_restarts
+    - window_seconds
+    - max_gap_seconds
+  - respawn_storm
+    - max_starts
+    - window_seconds
+  - message_timestamps
+    - enabled
+  - max_inbound_media_bytes
+  - strict
+  - media_delivery_allow_dirs
+  - trust_recent_files
+  - trust_recent_files_seconds
+  - api_server
+    - max_concurrent_runs
+- streaming
+  - enabled
+- onboarding
+  - seen
+    - busy_input_prompt
+- telemetry
+  - shared_metrics
+    - enabled
+    - send
+- updates
+  - pre_update_backup
+  - backup_keep
+  - non_interactive_local_changes
+- _config_version
+- session_reset
+  - mode
+  - idle_minutes
+  - at_hour
+- group_sessions_per_user
+- platform_toolsets
+  - cli
+  - telegram
+  - discord
+  - whatsapp
+  - slack
+  - signal
+  - homeassistant
+  - qqbot
+  - yuanbao
+  - teams
+  - google_chat
+- mcp_servers
+  - root-paper-lab
+    - command
+    - args
+    - env
+      - ROOT_PAPER_DATA
+      - ROOT_PAPER_IMPORT
+      - SEMANTIC_SCHOLAR_API_KEY  # value omitted / sensitive-name key
+    - connect_timeout
+    - enabled
+```
