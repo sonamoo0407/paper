@@ -16,26 +16,9 @@ Hermes Agent가 자연어 요청을 해석하고, 이 프로그램의 MCP 도구
 
 ## 경기대 도서관 구독 DB 병행 탐색
 
-논문 분석 키워드마다 공개 검색과 경기대 도서관이 제공하는 구독 DB 탐색을 함께 수행한다. 탐색마다 **DB명·정확한 검색식·확인 시각·결과 수**를 기록하고, 논문 접근 상태는 아래 네 가지로 구분한다.
+논문 분석 키워드를 받을 때 공개 검색과 경기대 도서관이 제공하는 구독 DB 탐색을 함께 수행한다. 각 탐색에는 DB명, 정확한 검색식, 확인 시각, 결과 수를 기록하고, 논문 접근 상태는 `공개 전문`, `기관 구독 전문 확인`, `메타데이터만 확인`, `기관 구독 필요·미확보`로 구분한다.
 
-- `공개 전문`
-- `기관 구독 전문 확인`
-- `메타데이터만 확인`
-- `기관 구독 필요·미확보`
-
-이 프로젝트와 이 백업에는 경기대 DB 로그인·검색 자동화 커넥터가 없다. 로그인 정보·쿠키·프록시 세션·인증 헤더는 저장·출력·재사용·자동화하지 않는다. 접근 권한이 필요한 경우에는 사용자가 수동으로 로그인한 뒤 확인 가능한 결과만 장부에 기록한다.
-
-## 인용 그래프 HTML과 이관 백업 자료
-
-이 브랜치는 VirtualBox→VMware 이관용 백업 브랜치다. 기존 `main`을 변경하지 않고, 백업 전용 자료를 [`vm-migration-backup-20260928/`](vm-migration-backup-20260928/)에 보관한다.
-
-- [이관 범위·제외 목록·복원 절차](MIGRATION_BACKUP.md)
-- [검수 가능한 인용 그래프 입력 JSON](vm-migration-backup-20260928/graph-renderer/graphs/graph-output/graph.json)
-- [기본 로컬 HTML 그래프](vm-migration-backup-20260928/graph-renderer/graphs/graph_ui_test_20260923T060000Z/site/index.html)
-- [향상 로컬 HTML 그래프](vm-migration-backup-20260928/graph-renderer/graphs/graph_ui_enhanced_test_20260924T084500Z/site/index.html)
-- [향상 그래프 UI 실제 검수 결과](vm-migration-backup-20260928/graph-renderer/graphs/graph_ui_enhanced_test_20260924T084500Z/RESULT.md)
-
-향상 HTML은 제목·저자·논문 ID 검색, 원문 참고문헌/메타데이터 간선 필터, 노드 클릭 시 인접 인용선 강조, 우측 인용 연결·근거 패널, 노드 ID와 `미기록` 표기를 제공한다. 그래프는 입력 `graph.json`을 읽기 전용으로 사용하며, 외부 URL 요청 없이 로컬 정적 HTML로 검수했다. 포함된 결과는 랜섬웨어 통합 run의 **작은 그래프 JSON·HTML·검수 기록**이고, 대용량 원문 PDF·원시 메타데이터·세션은 포함하지 않는다.
+이 저장소에는 경기대 DB 로그인·검색 커넥터나 세션 자동화가 포함되어 있지 않다. 로그인 정보, 쿠키, 프록시 세션, 인증 헤더는 저장·출력·재사용·자동화하지 않는다. 로그인 또는 권한 화면이 필요하면 사용자의 수동 접근 후 확인 가능한 결과만 기록한다.
 
 ## 로컬 실행
 
@@ -54,9 +37,7 @@ python -m venv .venv
 
 서버 실행 명세: command는 해당 가상환경 Python의 절대 경로, args는 `-m root_paper_lab.server`. 선택 환경변수 `ROOT_PAPER_DATA`는 결과 저장 폴더, `ROOT_PAPER_IMPORT`는 PDF 입력 폴더다. 기본값은 프로젝트의 runs, inbox다. 비밀정보는 이 파일이나 MCP 호출 인자에 넣지 않는다.
 
-운영 규칙은 `skills/root-paper-research/SKILL.md`다. 확인된 Hermes 스킬 설치 위치에 복사하되 같은 이름이 있으면 덮어쓰지 말고 비교한다. 2026-09-14 Hermes 등록·Gateway 재시작·7개 도구 연결과 실제 수집 호출을 확인했다. 운영 검증의 출처와 한계는 `docs/operations-20260914.md`를 참조한다.
-
-운영에서는 `ROOT_PAPER_DATA`를 코드 checkout 밖의 고정 절대경로로 지정한다. 프로그램을 업데이트해도 이 경로를 유지하고, 재시작 후 실제 프로세스의 환경변수와 반환된 run 경로를 함께 확인한다. 연구 보고의 상세 출력·다단계 추적 요구사항은 `docs/research-report-requirements.md`에 기록했다.
+운영 규칙은 `skills/root-paper-research/SKILL.md`다. 확인된 Hermes 스킬 설치 위치에 복사하되 같은 이름이 있으면 덮어쓰지 말고 비교한다. 실제 Hermes 등록은 아직 수행하지 않았다.
 
 ## 사용 예
 

@@ -1,0 +1,32 @@
+{
+  "nodes": [
+    {"id":"R1-01","title":"UNVEIL: A Large-Scale, Automated Approach to Detecting Ransomware","year":2016,"role":"starting","status":"proposed"},
+    {"id":"R1-02","title":"The Aftermath of a Crypto-Ransomware Attack at a Large Academic Institution","year":2018,"role":"starting","status":"proposed"},
+    {"id":"R1-03","title":"Detecting Ransomware Despite I/O Overhead: A Practical Multi-Staged Approach","year":2025,"role":"starting","status":"proposed"},
+    {"id":"R1-04","title":"Ransom Access Memories: Achieving Practical Ransomware Protection in Cloud with DeftPunk","year":2024,"role":"starting","status":"proposed"},
+    {"id":"R1-05","title":"The Ransomware Decade: The Creation of a Fine-Grained Dataset and a Longitudinal Study","year":2025,"role":"starting","status":"proposed"},
+    {"id":"R2-01","title":"ShieldFS: a self-healing, ransomware-aware filesystem","year":2016,"role":"retained_source","status":"proposed"},
+    {"id":"R2-02","title":"Redemption: Real-Time Protection Against Ransomware at End-Hosts","year":2017,"role":"retained_source","status":"proposed"},
+    {"id":"R2-03","title":"PayBreak: Defense Against Cryptographic Ransomware","year":2017,"role":"supporting_source","status":"proposed"},
+    {"id":"R3-02","title":"Cutting the Gordian Knot: A Look Under the Hood of Ransomware Attacks","year":2016,"role":"proposed_source_candidate","status":"proposed"},
+    {"id":"R3-04","title":"Cryptovirology: Extortion-Based Security Threats and Countermeasures","year":1996,"role":"proposed_source_candidate","status":"proposed"}
+  ],
+  "seeds":["R1-01","R1-02","R1-03","R1-04","R1-05"],
+  "edges":[
+    {"source":"R1-02","target":"R1-01","kind":"citation","verification":"fulltext","evidence":["ledger/round2_trace.tsv: R1-02 PDF 3,15"]},
+    {"source":"R1-03","target":"R1-01","kind":"citation","verification":"fulltext","evidence":["ledger/round2_trace.tsv: R1-03 PDF 14"]},
+    {"source":"R1-04","target":"R1-01","kind":"citation","verification":"fulltext","evidence":["ledger/round2_trace.tsv: R1-04 PDF 17"]},
+    {"source":"R1-02","target":"R2-01","kind":"citation","verification":"fulltext","evidence":["ledger/round2_trace.tsv: R1-02 PDF 3,15"]},
+    {"source":"R1-03","target":"R2-01","kind":"citation","verification":"fulltext","evidence":["ledger/round2_trace.tsv: R1-03 PDF 14"]},
+    {"source":"R1-02","target":"R2-02","kind":"citation","verification":"fulltext","evidence":["ledger/round2_trace.tsv: R1-02 PDF 15"]},
+    {"source":"R1-03","target":"R2-02","kind":"citation","verification":"fulltext","evidence":["ledger/round2_trace.tsv: R1-03 PDF 14"]},
+    {"source":"R1-04","target":"R2-02","kind":"citation","verification":"fulltext","evidence":["ledger/round2_trace.tsv: R1-04 PDF 17"]},
+    {"source":"R1-02","target":"R2-03","kind":"citation","verification":"fulltext","evidence":["ledger/round2_trace.tsv: R1-02 PDF 3,15"]},
+    {"source":"R2-01","target":"R3-02","kind":"citation","verification":"fulltext","evidence":["ledger/round3_trace.tsv: R2-01 PDF 11"]},
+    {"source":"R2-02","target":"R3-02","kind":"citation","verification":"fulltext","evidence":["ledger/round3_trace.tsv: R2-02 PDF 21"]},
+    {"source":"R2-03","target":"R3-02","kind":"citation","verification":"fulltext","evidence":["ledger/round3_trace.tsv: R2-03 PDF 12"]},
+    {"source":"R2-01","target":"R3-04","kind":"citation","verification":"fulltext","evidence":["ledger/round3_trace.tsv: R2-01 PDF 11"]},
+    {"source":"R2-03","target":"R3-04","kind":"citation","verification":"fulltext","evidence":["ledger/round3_trace.tsv: R2-03 PDF 12"]}
+  ],
+  "excluded_edges":[{"source":"R1-05","target":"R3-02","reason":"본 run에서 참고문헌 항목을 아직 확인하지 않음"}]
+}
