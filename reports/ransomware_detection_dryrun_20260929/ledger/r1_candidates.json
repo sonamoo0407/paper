@@ -1,0 +1,67 @@
+[
+  {
+    "id": "R1-01",
+    "title": "Autonomous Ransomware Detection through Deep Ransomware Fingerprint Mapping",
+    "authors": "Joseph Briser; Anthony Weiss; James MacGregor; Michael Schmidt; Zachary Bouchard",
+    "year": 2024,
+    "venue": "확인 불가",
+    "doi": "10.36227/techrxiv.173145032.25760987/v1",
+    "official_url": "https://doi.org/10.36227/techrxiv.173145032.25760987/v1",
+    "fulltext_status": "메타데이터만 확인",
+    "decision": "excluded",
+    "reason": "preprint/early-access record; not selected in this citation-evidence dry run",
+    "reference_metadata_count": 0
+  },
+  {
+    "id": "R1-02",
+    "title": "Ransomware Detection in Cyber Security Domain",
+    "authors": "Ömer ASLAN",
+    "year": 2022,
+    "venue": "Bitlis Eren Üniversitesi Fen Bilimleri Dergisi",
+    "doi": "10.17798/bitlisfen.1038966",
+    "official_url": "https://doi.org/10.17798/bitlisfen.1038966",
+    "fulltext_status": "메타데이터만 확인",
+    "decision": "selected",
+    "reason": "direct topic match and Crossref reference metadata contains verifiable DOI references",
+    "reference_metadata_count": 20
+  },
+  {
+    "id": "R1-03",
+    "title": "Table 9: Detection strategies of ransomware attack in healthcare sector.",
+    "authors": "확인 불가",
+    "year": "확인 불가",
+    "venue": "확인 불가",
+    "doi": "10.7717/peerj-cs.3073/table-9",
+    "official_url": "https://doi.org/10.7717/peerj-cs.3073/table-9",
+    "fulltext_status": "메타데이터만 확인",
+    "decision": "excluded",
+    "reason": "table-level record, not a standalone research paper",
+    "reference_metadata_count": 0
+  },
+  {
+    "id": "R1-04",
+    "title": "Deep Learning Techniques for Ransomware Detection and Prevention",
+    "authors": "Kevin William Peoples",
+    "year": 2025,
+    "venue": "International Journal of Science and Research (IJSR)",
+    "doi": "10.21275/sr251110122231",
+    "official_url": "https://doi.org/10.21275/sr251110122231",
+    "fulltext_status": "메타데이터만 확인",
+    "decision": "excluded",
+    "reason": "direct topic match but no reference metadata in the retrieved Crossref record",
+    "reference_metadata_count": 0
+  },
+  {
+    "id": "R1-05",
+    "title": "Ransomware Detection with Deep Neural Networks",
+    "authors": "Matan Davidian; Natalia Vanetik; Michael Kiperberg",
+    "year": 2022,
+    "venue": "Proceedings of the 8th International Conference on Information Systems Security and Privacy",
+    "doi": "10.5220/0011008000003120",
+    "official_url": "https://doi.org/10.5220/0011008000003120",
+    "fulltext_status": "메타데이터만 확인",
+    "decision": "held",
+    "reason": "direct topic match but no reference metadata in the retrieved Crossref record",
+    "reference_metadata_count": 0
+  }
+]
