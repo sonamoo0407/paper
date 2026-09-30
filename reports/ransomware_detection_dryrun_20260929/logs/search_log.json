@@ -1,0 +1,33 @@
+{
+  "scope": {
+    "keyword": "ransomware detection",
+    "mode": "small one-cycle dry run",
+    "r1_max": 5,
+    "selected_max": 2,
+    "pdf_downloaded": false,
+    "pdf_preserved": false,
+    "paperqa_run": false,
+    "paper_code_run": false,
+    "vmware_latest_modified": false
+  },
+  "public": {
+    "db_name": "Crossref Works API",
+    "query": "query.bibliographic=ransomware detection; rows=5",
+    "checked_at_utc": "2026-09-29T23:11:04Z",
+    "result_records_collected": 5,
+    "access_state": "공개 메타데이터"
+  },
+  "institution_library": {
+    "db_name": "경기대학교 도서관 통합검색",
+    "query": "ransomware detection",
+    "checked_at_utc": "2026-09-29T23:11:04Z",
+    "access_state": "비로그인 공개 통합검색",
+    "holding_materials": 0,
+    "electronic_materials": 4466,
+    "electronic_journals": 0,
+    "scienceon_papers": 1524,
+    "riss_domestic_articles": 92,
+    "riss_overseas_articles": 80,
+    "note": "검색 결과 화면의 노출 메타데이터·접근 라벨만 확인. 로그인·PDF 열기·저장·내보내기 없음."
+  }
+}
