@@ -1,0 +1,27 @@
+{
+  "search_title_author_id": {
+    "nodes": 10,
+    "edges": 14,
+    "visibleNodes": 1,
+    "visibleEdges": 14,
+    "selected": null,
+    "externalUrls": 0
+  },
+  "metadata_edge_filter": {
+    "nodes": 10,
+    "edges": 14,
+    "visibleNodes": 1,
+    "visibleEdges": 0,
+    "selected": null,
+    "externalUrls": 0
+  },
+  "node_click": {
+    "selected": "R2-01",
+    "adjacent_edges": 4,
+    "has_connections": true,
+    "has_missing_status": true
+  },
+  "external_url_requests": [],
+  "screenshot": "enhanced_graph_ui.png",
+  "status": "PASS"
+}

@@ -1,0 +1,21 @@
+{
+  "hover_once": {
+    "display": "block",
+    "text": "ShieldFS: a self-healing, ransomware-aware filesystem\n저자: 확인 불가/미기록\n연도: 2016\n학회/저널: 확인 불가/미기록\n한 줄 요약: 역할: 보존 소스 · 상태: proposed"
+  },
+  "click_once": {
+    "detail_contains_R2_01": true,
+    "detail_contains_status": true
+  },
+  "hook": {
+    "nodes": 10,
+    "edges": 14,
+    "externalUrls": 0
+  },
+  "performance_resources": [
+    "http://127.0.0.1:18767/favicon.ico"
+  ],
+  "external_url_requests": [],
+  "screenshot": "hover_click_screen.png",
+  "status": "PASS"
+}
