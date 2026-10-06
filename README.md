@@ -31,6 +31,20 @@ python -m venv .venv
 
 서버 실행 명세: command는 해당 가상환경 Python의 절대 경로, args는 `-m root_paper_lab.server`. 선택 환경변수 `ROOT_PAPER_DATA`는 결과 저장 폴더, `ROOT_PAPER_IMPORT`는 PDF 입력 폴더다. 기본값은 프로젝트의 runs, inbox다. 비밀정보는 이 파일이나 MCP 호출 인자에 넣지 않는다.
 
+### 기관 구독 원문 가져오기
+
+공개 원문이 없는 후보는 `기관 구독 필요`로 분리한다. 작업자가 경기대 도서관 프록시 등 자신에게 허용된 로그인 세션에서 한 편씩 합법적으로 내려받아, Hermes 실행 호스트의 `ROOT_PAPER_IMPORT` 폴더로 전달한다. 이후 `preserve_pdf`가 SHA-256·원본 경로·보존 경로를 기록한다. 이 프로젝트는 도서관 아이디·비밀번호·쿠키를 저장하거나 로그인/대량 다운로드를 자동화하지 않는다. 로컬 PC와 Hermes가 다른 컴퓨터라면, 사전에 구성한 안전한 파일 전송 경로를 통해 PDF만 전달하며 인증정보는 전송 대상에 포함하지 않는다.
+
+### 경기대 도서관 보조 수집기
+
+`tools/kyonggi-library-collector/`에는 이 연구 흐름의 **로컬 보조 수집기**를 함께 보관한다. 역할은 다음과 같이 분리한다.
+
+- `kyonggi_collector.py collect`: 경기대 EDS 공개 검색에서 키워드별 서지 메타데이터·DOI·원문 연결 주소를 최대 지정 건수만큼 장부로 수집한다.
+- `local_research_pipeline.py`: 중복 제거, 로컬 점수화·후보 선별, 확보한 PDF의 텍스트/참고문헌 추출, 근거 기반 인용 그래프 생성을 LLM 호출 없이 수행한다.
+- 기관 구독 원문은 계정 소유자가 로그인한 합법적 세션에서만 열람한다. 자격증명·쿠키·세션값은 저장소, 결과 장부, Git 기록에 넣지 않는다.
+
+2026-10-06 기준으로 EDS 메타데이터 수집과 로그인 상태 검증은 확인했지만, 프록시 PDF 뷰어의 자동 내려받기·파일 검증 루프는 계속 검증 중이다. 따라서 이 저장소는 해당 자동 내려받기가 성공했다고 주장하지 않으며, 실제 PDF가 확보되면 `preserve_pdf`로 해시와 보존 경로를 기록한 뒤 연구 파이프라인에 넘긴다. 세부 실행 방법과 현재 검증 경계는 [수집기 README](tools/kyonggi-library-collector/README.md) 및 [운영 기록](docs/kyonggi-library-collector-20261006.md)을 참조한다.
+
 운영 규칙은 `skills/root-paper-research/SKILL.md`다. 확인된 Hermes 스킬 설치 위치에 복사하되 같은 이름이 있으면 덮어쓰지 말고 비교한다. 2026-09-14 Hermes 등록·Gateway 재시작·7개 도구 연결과 실제 수집 호출을 확인했다. 운영 검증의 출처와 한계는 `docs/operations-20260914.md`를 참조한다.
 
 운영에서는 `ROOT_PAPER_DATA`를 코드 checkout 밖의 고정 절대경로로 지정한다. 프로그램을 업데이트해도 이 경로를 유지하고, 재시작 후 실제 프로세스의 환경변수와 반환된 run 경로를 함께 확인한다. 연구 보고의 상세 출력·다단계 추적 요구사항은 `docs/research-report-requirements.md`에 기록했다.

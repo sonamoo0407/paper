@@ -1,0 +1,6 @@
+{
+  "library_home": "https://library.kyonggi.ac.kr/",
+  "output_dir": "./outputs",
+  "max_pages": 10,
+  "max_records": 100
+}
