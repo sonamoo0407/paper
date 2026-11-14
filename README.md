@@ -102,6 +102,10 @@ DNS는 기능 사용 예시이며 확정 연구 주제가 아니다. 검색 키�
 
 설치 성공·모의 테스트 성공과 실제 검색/유료 모델 분석/디스코드 연동 성공을 구분한다. 현재 검증 내역은 `VALIDATION.md` 참조.
 
+## 라이선스
+
+프로젝트 자체 코드와 문서는 [MIT 라이선스](LICENSE)를 따른다. 포함된 외부 코드의 라이선스와 출처는 [외부 코드 고지](THIRD_PARTY_NOTICES.md)를 참조한다.
+
 ## 원본
 
 - AI Research Trend Atlas: https://github.com/LikeACloud7/ai-trend — commit `e20dfc1eebff33c0ce635f26be70cce82ae6bacd`, MIT. 공식 ACL Anthology/OpenReview 수집 구조를 참고해 Python·감사기록·BK21 분리 판정 방식으로 수정. 자세한 내용은 `THIRD_PARTY_NOTICES.md`.
