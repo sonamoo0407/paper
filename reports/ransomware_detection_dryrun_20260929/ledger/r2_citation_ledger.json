@@ -1,0 +1,28 @@
+[
+  {
+    "id": "R2-01",
+    "title": "Ransomware: Recent advances, analysis, challenges and future research directions",
+    "authors": "Craig Beaman; Ashley Barkworth; Toluwalope David Akande; Saqib Hakak; Muhammad Khurram Khan",
+    "year": 2021,
+    "venue": "Computers &amp; Security",
+    "doi": "10.1016/j.cose.2021.102490",
+    "official_url": "https://doi.org/10.1016/j.cose.2021.102490",
+    "fulltext_status": "메타데이터만 확인",
+    "role": "retained_source",
+    "citation_evidence": "Crossref R1-02 reference metadata; DOI present in retrieved reference list",
+    "citation_locator": "reference #16"
+  },
+  {
+    "id": "R2-02",
+    "title": "A Multi-Classifier Network-Based Crypto Ransomware Detection System: A Case Study of Locky Ransomware",
+    "authors": "Ahmad O. Almashhadani; Mustafa Kaiiali; Sakir Sezer; Philip O'Kane",
+    "year": 2019,
+    "venue": "IEEE Access",
+    "doi": "10.1109/access.2019.2907485",
+    "official_url": "https://doi.org/10.1109/access.2019.2907485",
+    "fulltext_status": "메타데이터만 확인",
+    "role": "retained_source",
+    "citation_evidence": "Crossref R1-02 reference metadata; DOI present in retrieved reference list",
+    "citation_locator": "reference #13"
+  }
+]

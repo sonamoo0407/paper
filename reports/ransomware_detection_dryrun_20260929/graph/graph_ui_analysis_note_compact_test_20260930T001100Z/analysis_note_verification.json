@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "before": {
+    "note": false,
+    "selected": null,
+    "rect": {
+      "x": 451,
+      "y": 548
+    }
+  },
+  "after_actual_pointer_click": {
+    "selected": "R1-02",
+    "heads": 2,
+    "note": true,
+    "metadataOnly": true,
+    "r1Path": true,
+    "r2Path": true,
+    "searchPath": true,
+    "summary": true
+  },
+  "screenshot": "analysis_note_click_firefox.png"
+}

@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "counts": {
+    "r1_candidates": 5,
+    "selected_final_candidates": 1,
+    "r2_retained": 2,
+    "graph_nodes": 3,
+    "graph_directed_edges": 2
+  },
+  "checks": {
+    "r1_at_most_5": true,
+    "selected_at_most_2": true,
+    "r2_has_reference_metadata_evidence": true,
+    "graph_node_count_matches": true,
+    "graph_edge_count_matches": true,
+    "click_cycle_passed": true,
+    "no_pdf_files_in_run": true,
+    "no_vmware_export_in_run": true
+  },
+  "unconfirmed": [
+    "R1-05 held: retrieved Crossref record has no reference metadata",
+    "R1-04 excluded: retrieved Crossref record has no reference metadata",
+    "R2 citation locators are Crossref metadata, not full-text reference pages",
+    "기관 구독 전문은 비로그인 상태라 확인하지 않음"
+  ],
+  "failures": []
+}

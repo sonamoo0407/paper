@@ -1,0 +1,78 @@
+{
+  "nodes": [
+    {
+      "id": "R1-02",
+      "title": "Ransomware Detection in Cyber Security Domain",
+      "authors": "Ömer ASLAN",
+      "year": 2022,
+      "venue": "Bitlis Eren Üniversitesi Fen Bilimleri Dergisi",
+      "url": "https://doi.org/10.17798/bitlisfen.1038966",
+      "fulltext_status": "메타데이터만 확인",
+      "role": "starting",
+      "status": "selected",
+      "selection_reason": "direct topic match and Crossref reference metadata contains verifiable DOI references"
+    },
+    {
+      "id": "R2-01",
+      "title": "Ransomware: Recent advances, analysis, challenges and future research directions",
+      "authors": "Craig Beaman; Ashley Barkworth; Toluwalope David Akande; Saqib Hakak; Muhammad Khurram Khan",
+      "year": 2021,
+      "venue": "Computers &amp; Security",
+      "doi": "10.1016/j.cose.2021.102490",
+      "official_url": "https://doi.org/10.1016/j.cose.2021.102490",
+      "fulltext_status": "메타데이터만 확인",
+      "role": "retained_source",
+      "citation_evidence": "Crossref R1-02 reference metadata; DOI present in retrieved reference list",
+      "citation_locator": "reference #16",
+      "status": "retained",
+      "selection_reason": "R1-02 reference metadata includes this DOI"
+    },
+    {
+      "id": "R2-02",
+      "title": "A Multi-Classifier Network-Based Crypto Ransomware Detection System: A Case Study of Locky Ransomware",
+      "authors": "Ahmad O. Almashhadani; Mustafa Kaiiali; Sakir Sezer; Philip O'Kane",
+      "year": 2019,
+      "venue": "IEEE Access",
+      "doi": "10.1109/access.2019.2907485",
+      "official_url": "https://doi.org/10.1109/access.2019.2907485",
+      "fulltext_status": "메타데이터만 확인",
+      "role": "retained_source",
+      "citation_evidence": "Crossref R1-02 reference metadata; DOI present in retrieved reference list",
+      "citation_locator": "reference #13",
+      "status": "retained",
+      "selection_reason": "R1-02 reference metadata includes this DOI"
+    }
+  ],
+  "edges": [
+    {
+      "source": "R1-02",
+      "target": "R2-01",
+      "records": [
+        {
+          "verification": "metadata",
+          "evidence": [
+            "Crossref R1-02 reference metadata; DOI present in retrieved reference list"
+          ],
+          "locator": "reference #16",
+          "source_url": "https://api.crossref.org/works/10.17798/bitlisfen.1038966"
+        }
+      ]
+    },
+    {
+      "source": "R1-02",
+      "target": "R2-02",
+      "records": [
+        {
+          "verification": "metadata",
+          "evidence": [
+            "Crossref R1-02 reference metadata; DOI present in retrieved reference list"
+          ],
+          "locator": "reference #13",
+          "source_url": "https://api.crossref.org/works/10.17798/bitlisfen.1038966"
+        }
+      ]
+    }
+  ],
+  "direction": "citing_to_cited",
+  "layout": "R1 below / R2 above"
+}
