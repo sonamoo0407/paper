@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>랜섬웨어 논문 인용망의 중간 논문 후보</title>
+<style>
+:root{color-scheme:light dark}body{font:1rem/1.65 system-ui,sans-serif;max-width:50rem;margin:2rem auto;padding:0 1rem}h1,h2{line-height:1.25}table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:.65rem;border-bottom:1px solid GrayText}td:last-child{font-variant-numeric:tabular-nums}small{color:GrayText}li{overflow-wrap:anywhere}
+</style>
+<main>
+<h1>랜섬웨어 논문 인용망의 중간 논문 후보</h1>
+<h2>9월 30일 Crossref 드라이런: 후보 없음</h2>
+<p>Crossref 서지정보 기반 3개 노드·인용선 2개. 출발 논문이 두 논문을 각각 직접 인용했고, 중간을 지나는 경로가 없어 매개중심성은 모두 0이다.</p>
+<h2>별도 보존본: ShieldFS가 1위</h2>
+<p>9월 28일 이관 백업의 랜섬웨어 인용망. 원장에 원문 확인으로 표시된 14개 인용선과 10개 노드를 사용했다.</p>
+<table><thead><tr><th>순위</th><th>논문</th><th>매개중심성</th></tr></thead><tbody>
+<tr><td>1</td><td><strong>ShieldFS: a self-healing, ransomware-aware filesystem</strong><br><small>R2-01 · 2016</small></td><td>0.03241</td></tr>
+<tr><td>2</td><td><strong>Redemption: Real-Time Protection Against Ransomware at End-Hosts</strong><br><small>R2-02 · 2017</small></td><td>0.02546</td></tr>
+<tr><td>3</td><td><strong>PayBreak: Defense Against Cryptographic Ransomware</strong><br><small>R2-03 · 2017</small></td><td>0.01157</td></tr>
+</tbody></table>
+<p>0점인 7개 노드는 순위에서 제외했다. 점수는 방향을 유지한 최단 인용 경로의 기여도를 합산하고 (10−1)×(10−2)로 나눈 값이다.</p>
+<h2>ShieldFS가 중간에 놓이는 경로</h2>
+<p><strong>R1-03 → ShieldFS → R3-04</strong></p>
+<ul><li>Detecting Ransomware Despite I/O Overhead: A Practical Multi-Staged Approach → ShieldFS: a self-healing, ransomware-aware filesystem<br><small>ledger/round2_trace.tsv: R1-03 PDF 14</small></li>
+<li>ShieldFS: a self-healing, ransomware-aware filesystem → Cryptovirology: Extortion-Based Security Threats and Countermeasures<br><small>ledger/round3_trace.tsv: R2-01 PDF 11</small></li></ul>
+<p>이 결과는 <strong>구조상 매개 후보</strong>다. ShieldFS가 서로 다른 연구 흐름에 실제로 방법을 전달했는지는 본문 인용 문맥을 따로 검토해야 한다.</p>
+<p><a href="../vm-migration-backup-20260928/graph-renderer/graphs/graph_ui_enhanced_test_20260924T084500Z/site/index.html">보존본 인터랙티브 그래프</a></p>
+</main></html>

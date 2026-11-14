@@ -1,6 +1,16 @@
-# 루트논문 연구 도구 (초기 구현)
+# 논문 수집·인용 분석
 
 Hermes Agent가 자연어 요청을 해석하고, 이 프로그램의 MCP 도구를 호출하는 구조다. Scholar Search MCP의 검토한 Semantic Scholar 클라이언트를 재사용하며 페이지 순회·실행 기록을 보강했다. PaperQA로 보존 PDF의 근거 기반 분석 초안을 만든다. 독립적인 채팅 UI나 디스코드 봇은 만들지 않는다.
+
+## 연구 진행 현황
+
+경기대 EDS와 공개 검색에서 후보를 수집하고, 선별 근거와 전문 확보 상태를 남긴다. 확보한 논문에서 R1 출발 논문 → R2 직접 인용 → R3 한 단계 추가 인용을 추적한다. 연구 질문은 **어떤 논문이 방법의 기반을 만들고, 발전시키고, 서로 다른 연구 흐름을 연결하는가**다. 인용망에서 후보를 찾고 실제 인용 문맥으로 역할을 검토한다.
+
+- [전체 구조 PDF](docs/paper-architecture-bw.pdf)
+- [랜섬웨어 후보 선정 근거와 중간 논문 분석](docs/ransomware-citation-study.md)
+- [NetMiner에 가져올 랜섬웨어 인용망과 재현 방법](examples/ransomware-netminer/README.md)
+- [citracer로 피싱 논문 인용 문맥을 추적한 실험](examples/citracer-phishing/README.md)
+- [헤르메스 인용 문맥 채점 규칙과 적용 상태](skills/root-paper-research/CITATION_CONTEXT_RULES.md)
 
 ## 포함 기능
 
@@ -27,7 +37,7 @@ Hermes Agent가 자연어 요청을 해석하고, 이 프로그램의 MCP 도구
 
 ## 인용 그래프 HTML과 이관 백업 자료
 
-이 브랜치는 VirtualBox→VMware 이관용 백업 브랜치다. 기존 `main`을 변경하지 않고, 백업 전용 자료를 [`vm-migration-backup-20260928/`](vm-migration-backup-20260928/)에 보관한다.
+VirtualBox→VMware 이관 자료는 [`vm-migration-backup-20260928/`](vm-migration-backup-20260928/)에 보관한다.
 
 - [이관 범위·제외 목록·복원 절차](MIGRATION_BACKUP.md)
 - [검수 가능한 인용 그래프 입력 JSON](vm-migration-backup-20260928/graph-renderer/graphs/graph-output/graph.json)

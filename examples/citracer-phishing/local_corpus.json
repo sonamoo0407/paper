@@ -1,0 +1,12 @@
+[
+  {
+    "title": "Phishpedia: A Hybrid Deep Learning Based Approach to Visually Identify Phishing Webpages",
+    "path": "runs/citracer-phishing/phishpedia.pdf",
+    "source": "https://www.usenix.org/system/files/sec21-lin.pdf"
+  },
+  {
+    "title": "PhishTime: Continuous Longitudinal Measurement of the Effectiveness of Anti-phishing Blacklists",
+    "path": "runs/citracer-phishing/phishtime.pdf",
+    "source": "https://www.usenix.org/system/files/sec20-oest-phishtime.pdf"
+  }
+]

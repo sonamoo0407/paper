@@ -1,0 +1,1983 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 100vh;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+
+
+
+
+
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+
+
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+
+
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+
+
+
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"borderWidth": 1, "color": {"background": "#2563eb", "border": "#2563eb"}, "font": {"color": "#222222"}, "id": "R1-01", "label": "UNVEIL: A Large-Scale, Automated Approach to Dete\u2026 (2016)", "level": 1, "shape": "dot", "size": 20, "title": ""}, {"borderWidth": 1, "color": {"background": "#2563eb", "border": "#2563eb"}, "font": {"color": "#222222"}, "id": "R1-02", "label": "The Aftermath of a Crypto-Ransomware Attack at a \u2026 (2018)", "level": 3, "shape": "dot", "size": 20, "title": ""}, {"borderWidth": 1, "color": {"background": "#2563eb", "border": "#2563eb"}, "font": {"color": "#222222"}, "id": "R1-03", "label": "Detecting Ransomware Despite I/O Overhead: A Prac\u2026 (2025)", "level": 5, "shape": "dot", "size": 20, "title": ""}, {"borderWidth": 1, "color": {"background": "#2563eb", "border": "#2563eb"}, "font": {"color": "#222222"}, "id": "R1-04", "label": "Ransom Access Memories: Achieving Practical Ranso\u2026 (2024)", "level": 4, "shape": "dot", "size": 20, "title": ""}, {"borderWidth": 1, "color": {"background": "#2563eb", "border": "#2563eb"}, "font": {"color": "#222222"}, "id": "R1-05", "label": "The Ransomware Decade: The Creation of a Fine-Gra\u2026 (2025)", "level": 5, "shape": "dot", "size": 20, "title": ""}, {"borderWidth": 1, "color": {"background": "#008577", "border": "#008577"}, "font": {"color": "#222222"}, "id": "R2-01", "label": "ShieldFS: a self-healing, ransomware-aware filesy\u2026 (2016)", "level": 1, "shape": "dot", "size": 20, "title": ""}, {"borderWidth": 1, "color": {"background": "#008577", "border": "#008577"}, "font": {"color": "#222222"}, "id": "R2-02", "label": "Redemption: Real-Time Protection Against Ransomwa\u2026 (2017)", "level": 2, "shape": "dot", "size": 20, "title": ""}, {"borderWidth": 1, "color": {"background": "#008577", "border": "#008577"}, "font": {"color": "#222222"}, "id": "R2-03", "label": "PayBreak: Defense Against Cryptographic Ransomware (2017)", "level": 2, "shape": "dot", "size": 20, "title": ""}, {"borderWidth": 1, "color": {"background": "#a65316", "border": "#a65316"}, "font": {"color": "#222222"}, "id": "R3-02", "label": "Cutting the Gordian Knot: A Look Under the Hood o\u2026 (2016)", "level": 1, "shape": "dot", "size": 20, "title": ""}, {"borderWidth": 1, "color": {"background": "#a65316", "border": "#a65316"}, "font": {"color": "#222222"}, "id": "R3-04", "label": "Cryptovirology: Extortion-Based Security Threats \u2026 (1996)", "level": 0, "shape": "dot", "size": 20, "title": ""}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R1-02", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R1-01", "width": 2.5}, {"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R1-02", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R2-01", "width": 2.5}, {"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R1-02", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R2-02", "width": 2.5}, {"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R1-02", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R2-03", "width": 2.5}, {"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R1-03", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R1-01", "width": 2.5}, {"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R1-03", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R2-01", "width": 2.5}, {"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R1-03", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R2-02", "width": 2.5}, {"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R1-04", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R1-01", "width": 2.5}, {"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R1-04", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R2-02", "width": 2.5}, {"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R2-01", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R3-02", "width": 2.5}, {"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R2-01", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R3-04", "width": 2.5}, {"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R2-02", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R3-02", "width": 2.5}, {"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R2-03", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R3-02", "width": 2.5}, {"arrows": "to", "color": {"color": "#444444", "opacity": 0.9}, "from": "R2-03", "smooth": {"forceDirection": "vertical", "roundness": 0.4, "type": "cubicBezier"}, "title": "", "to": "R3-04", "width": 2.5}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {"nodes": {"font": {"color": "#222222", "size": 14, "face": "system-ui,-apple-system,SegoeUI,sans-serif", "background": "rgba(255,255,255,0.85)", "strokeWidth": 0, "vadjust": 4}, "margin": 10}, "layout": {"hierarchical": {"enabled": false}}, "physics": {"enabled": false}, "interaction": {"hover": true, "hoverConnectedEdges": false, "navigationButtons": true, "tooltipDelay": 100, "dragNodes": true}};
+
+
+
+
+
+
+                  network = new vis.Network(container, data, options);
+
+
+
+
+
+
+
+
+
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+<style>
+  .citracer-panel {
+    position: fixed; background: rgba(255,255,255,0.97); color: #222;
+    padding: 12px 16px; border-radius: 8px; font-family: sans-serif;
+    font-size: 13px; border: 1px solid #ccc;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08); z-index: 9999;
+  }
+  #citracer-legend { top: 10px; left: 10px; width: 280px; min-width: 200px; max-width: 50vw; max-height: calc(100vh - 30px); overflow-y: auto; overflow-x: hidden; }
+  #citracer-legend-resize {
+    position: fixed; top: 10px; width: 8px; height: calc(100vh - 30px);
+    cursor: col-resize; z-index: 10001;
+    pointer-events: auto;
+  }
+  #citracer-legend-resize:hover, #citracer-legend-resize.active {
+    background: rgba(0,102,204,0.3); border-radius: 4px;
+  }
+  #citracer-info   { top: 10px; right: 10px; width: 380px;
+                     max-height: calc(100vh - 30px); overflow-y: auto;
+                     display: none; }
+  #citracer-info.pinned { border-color: #06c; box-shadow: 0 2px 12px rgba(0,102,204,0.25); }
+  #citracer-info.pinned::before {
+    content: "📌 pinned — click the node again or × to unpin";
+    display: block; font-size: 10px; color: #06c; margin-bottom: 6px;
+  }
+  #citracer-info-close {
+    position: absolute; top: 6px; right: 10px;
+    color: #888; font-size: 22px; line-height: 1; cursor: pointer;
+    user-select: none; font-weight: 300;
+  }
+  #citracer-info-close:hover { color: #222; }
+  #citracer-info.empty { display: none; }
+  .legend-item {
+    cursor: pointer; user-select: none; padding: 2px 4px; border-radius: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .legend-item:hover { background: #f0f0f0; }
+  .legend-item.disabled { opacity: 0.35; text-decoration: line-through; }
+  .legend-dot {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+  }
+  .legend-edge { display: flex; align-items: center; gap: 8px; padding: 2px 4px; border-radius: 4px; }
+  .legend-edge-toggle { cursor: pointer; user-select: none; }
+  .legend-edge-toggle:hover { background: #f0f0f0; }
+  .legend-edge-toggle.disabled { opacity: 0.4; }
+  .edge-solid, .edge-dashed {
+    display: inline-block; width: 24px; height: 0; vertical-align: middle;
+  }
+  .edge-solid  { border-top: 2px solid #666; }
+  .edge-dashed { border-top: 1px dashed #b0b0b0; }
+  #citracer-info h3 { margin: 0 0 6px 0; font-size: 14px; line-height: 1.3; }
+  #citracer-info .meta { color: #555; font-size: 12px; margin-bottom: 8px; }
+  #citracer-info .hits { background: #fafafa; border: 1px solid #eee;
+                         border-radius: 4px; padding: 8px; margin-top: 8px; }
+  #citracer-info .hit-snippet { font-size: 12px; line-height: 1.45;
+                                margin-bottom: 8px; padding-bottom: 8px;
+                                border-bottom: 1px dashed #e0e0e0; }
+  #citracer-info .hit-snippet:last-child { border-bottom: none; margin-bottom: 0; }
+  #citracer-info mark { color: #222; padding: 0 2px; border-radius: 2px; }
+  #citracer-info .hits-toggle {
+    color: #06c; font-size: 11px; cursor: pointer; user-select: none;
+    margin-top: 4px; display: inline-block;
+  }
+  #citracer-info .hits-toggle:hover { text-decoration: underline; }
+  #citracer-info .abstract-block {
+    background: #fafafa; border: 1px solid #eee; border-radius: 4px;
+    padding: 6px 10px; margin-top: 8px;
+  }
+  #citracer-info .abstract-block summary {
+    cursor: pointer; color: #06c; font-size: 11px; user-select: none;
+    list-style: none;
+  }
+  #citracer-info .abstract-block summary::-webkit-details-marker { display: none; }
+  #citracer-info .abstract-block summary::before {
+    content: "▶ "; font-size: 9px; display: inline-block;
+    transition: transform 0.15s;
+  }
+  #citracer-info .abstract-block[open] summary::before {
+    transform: rotate(90deg);
+  }
+  #citracer-info .abstract-block .abstract-body {
+    font-size: 12px; line-height: 1.5; color: #333;
+    margin-top: 6px;
+    max-height: 220px; overflow-y: auto;
+  }
+  #citracer-info a { color: #06c; text-decoration: none; }
+  #citracer-info a:hover { text-decoration: underline; }
+  #citracer-info .hint { color: #888; font-size: 11px; padding: 6px 0;
+                         font-style: italic; }
+  #citracer-context-menu {
+    position: fixed; display: none; z-index: 10000;
+    background: #ffffff; border: 1px solid #ccc; border-radius: 6px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    font-family: sans-serif; font-size: 13px;
+    min-width: 140px; padding: 4px 0;
+  }
+  #citracer-context-menu .ctx-item {
+    padding: 6px 14px; cursor: pointer; user-select: none;
+    color: #222;
+  }
+  #citracer-context-menu .ctx-item:hover { background: #f0f0f0; }
+  #citracer-context-menu .ctx-sep {
+    height: 1px; background: #eee; margin: 4px 0;
+  }
+  #citracer-hidden-banner {
+    color: #06c; font-size: 11px; cursor: pointer; user-select: none;
+    padding: 4px 0;
+  }
+  #citracer-hidden-banner:hover { text-decoration: underline; }
+  #citracer-hidden-banner.empty { display: none; }
+  #citracer-footer {
+    border-top: 1px solid #eee; margin-top: 8px; padding-top: 8px;
+    display: flex; align-items: center; justify-content: space-between; gap: 6px;
+    flex-wrap: wrap;
+  }
+  #citracer-footer .export-group {
+    display: flex; align-items: center; gap: 4px;
+  }
+  #citracer-footer button, #citracer-footer select {
+    font-size: 11px; padding: 3px 8px; border: 1px solid #ccc;
+    border-radius: 4px; background: #fff; cursor: pointer; color: #222;
+  }
+  #citracer-footer button:hover { background: #f0f0f0; border-color: #999; }
+  #citracer-reset {
+    color: #888; font-size: 10px; cursor: pointer; user-select: none;
+  }
+  #citracer-reset:hover { color: #c33; text-decoration: underline; }
+  #citracer-reset.saved::before {
+    content: "💾 "; font-size: 10px;
+  }
+  .citracer-control {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px; padding: 4px 0;
+  }
+  .citracer-control label { font-size: 11px; color: #888; }
+  .citracer-control select {
+    font-size: 12px; padding: 2px 6px; border: 1px solid #ccc;
+    border-radius: 4px; background: #fff; color: #222; cursor: pointer;
+    flex: 1; max-width: 180px;
+  }
+  .citracer-control select:hover { border-color: #888; }
+  .citracer-control input[type=range] {
+    flex: 1; max-width: 180px; cursor: pointer;
+    accent-color: #06c;
+  }
+  .citracer-control input[type=search] {
+    flex: 1; max-width: 180px; font-size: 12px;
+    padding: 3px 6px; border: 1px solid #ccc; border-radius: 4px;
+  }
+  .citracer-control input[type=search]:focus {
+    outline: none; border-color: #06c;
+  }
+  .citracer-search-results {
+    max-height: 160px; overflow-y: auto; margin-top: 2px;
+  }
+  .citracer-search-results .result {
+    padding: 4px 6px; border-radius: 4px; font-size: 11px; cursor: pointer;
+    line-height: 1.3;
+  }
+  .citracer-search-results .result:hover {
+    background: #f0f0f0;
+  }
+  .citracer-search-results .result-title {
+    color: #222; font-weight: 500;
+  }
+  .citracer-search-results .result-meta {
+    color: #888; font-size: 10px;
+  }
+</style>
+
+<div id="citracer-legend" class="citracer-panel">
+  <div id="citracer-legend-resize"></div>
+  <div style="font-weight:bold;margin-bottom:6px;display:flex;align-items:center;gap:6px;"><img src="https://raw.githubusercontent.com/marcpinet/citracer/main/readme_data/logo.png" alt="" style="height:20px;width:20px;object-fit:contain;">citracer</div>
+  <div>랜섬웨어 보존 인용망 · 원문 확인 간선 14개</div><h3>중간 논문 후보 순위</h3><ol><li>ShieldFS <b>0.03241</b></li><li>Redemption <b>0.02546</b></li><li>PayBreak <b>0.01157</b></li></ol><p>구조상 매개 후보이며 본문 의미는 별도 확인이 필요합니다.</p><p><a href="ransomware-citation-study.md">상세 보고서: 선정 이유 · 인용 근거 · 분석 파일 위치</a></p>
+  <div id="citracer-counts">10 papers · 14 citations</div>
+
+  <hr style="border:none;border-top:1px solid #ddd;margin:8px 0;">
+  <div class="citracer-control">
+    <label for="citracer-search">검색</label>
+    <input type="search" id="citracer-search" placeholder="제목…"  autocomplete="off">
+  </div>
+  <div id="citracer-search-results" class="citracer-search-results"></div>
+  <div class="citracer-control">
+    <label for="citracer-layout">layout</label>
+    <select id="citracer-layout">
+      <option value="sugiyama-year">Sugiyama (by year)</option>
+      <option value="sugiyama-depth">Sugiyama (by depth)</option>
+      <option value="force-directed">Force-directed (BarnesHut)</option>
+      <option value="fruchterman">Fruchterman-Reingold (approx)</option>
+    </select>
+  </div>
+  <div class="citracer-control">
+    <label for="citracer-size">논문 점 크기</label>
+    <select id="citracer-size">
+      <option value="in-degree">그래프 내 피인용 수</option>
+      <option value="keyword-hits">keyword hits</option>
+      <option value="pagerank">PageRank</option>
+      <option value="betweenness" selected>매개중심성</option>
+    </select>
+  </div>
+  <div class="citracer-control">
+    <label for="citracer-spread">spread</label>
+    <input type="range" id="citracer-spread" min="0.3" max="3" step="0.05" value="1">
+  </div>
+  <div class="citracer-control" style="justify-content:flex-start;">
+    <input type="checkbox" id="citracer-curved" checked>
+    <label for="citracer-curved">curved edges</label>
+  </div>
+
+  <hr style="border:none;border-top:1px solid #ddd;margin:8px 0;">
+  <div style="font-size:11px;color:#888;margin-bottom:4px;">인용 단계</div>
+<p><strong>노드 색:</strong> <span style="color:#2563eb">●</span> R1 출발 논문 / <span style="color:#008577">●</span> R2 직접 인용 / <span style="color:#a65316">●</span> R3 한 단계 더 추적</p><p>색은 인용 단계, 점 크기는 매개중심성입니다.</p>
+  <div id="citracer-hidden-banner" class="empty">show N manually hidden</div>
+
+  <details id="citracer-analytics-section" style="margin-top:10px;">
+    <summary style="cursor:pointer;font-size:12px;color:#222;user-select:none;font-weight:bold;padding:4px 8px;background:#f0f0f0;border-radius:4px;border:1px solid #ddd;">그래프 지표</summary>
+    <div id="citracer-analytics-body" style="font-size:11px;margin-top:4px;"></div>
+  </details>
+  <div id="citracer-footer">
+    <div class="export-group">
+      <button id="citracer-export-svg" title="Export as SVG (vector, lossless zoom)">SVG</button>
+      <button id="citracer-export-png" title="Export as high-resolution PNG">PNG</button>
+      <select id="citracer-export-scale" title="Resolution multiplier for PNG">
+        <option value="2">2x</option>
+        <option value="3" selected>3x</option>
+        <option value="4">4x</option>
+      </select>
+    </div>
+    <div class="export-group" title="Export the papers currently visible (respects the legend filters and hidden nodes)">
+      <span style="font-size:11px;color:#888;">papers</span>
+      <button id="citracer-export-bib" title="BibTeX (.bib) of the visible papers">BibTeX</button>
+      <button id="citracer-export-ris" title="RIS (.ris) of the visible papers: imports into Zotero, Mendeley, EndNote">RIS</button>
+      <button id="citracer-export-csv" title="Spreadsheet (.csv) of the visible papers">CSV</button>
+    </div>
+    <span id="citracer-reset" title="clear saved layout, filters and positions">reset</span>
+  </div>
+</div>
+
+<div id="citracer-info" class="citracer-panel">
+  <span id="citracer-info-close" title="close (unpin)">×</span>
+  <div id="citracer-info-body"></div>
+</div>
+
+<div id="citracer-context-menu">
+  <div class="ctx-item" data-action="hide">Hide</div>
+  <div class="ctx-item" data-action="pin">Pin</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" data-action="supply" style="display:none;">Supply PDF...</div>
+  <div class="ctx-item" data-action="open">Open link ↗</div>
+</div>
+<div id="citracer-supply-banner" style="display:none;position:fixed;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(30,30,30,0.95);color:#fff;padding:10px 16px;border-radius:8px;font-size:12px;font-family:sans-serif;z-index:10000;max-width:90vw;box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+  <div style="margin-bottom:6px;font-weight:bold;">📋 Add to your next citracer run:</div>
+  <code id="citracer-supply-cmd" style="display:block;background:#222;padding:8px;border-radius:4px;font-size:11px;overflow-x:auto;white-space:pre;cursor:pointer;" title="Click to copy"></code>
+  <div style="margin-top:4px;color:#aaa;font-size:10px;">Click the command to copy. <span id="citracer-supply-close" style="color:#6cf;cursor:pointer;text-decoration:underline;">Dismiss</span></div>
+</div>
+
+<script>
+(function() {
+  const NODE_DETAILS = {"R1-01": {"title": "UNVEIL: A Large-Scale, Automated Approach to Detecting Ransomware", "authors": [], "year": 2016, "publication_date": null, "status": "pending", "depth": 0, "url": null, "doi": null, "arxiv_id": null, "abstract": null, "citation_count": null, "keyword_hits": [], "keyword_hit_types": [], "keyword_hit_scores": [], "is_new": false, "depth_level": 0, "year_level": 1, "bibtex": "@misc{anon2016unveil,\n  title = {{UNVEIL}: A Large-Scale, Automated Approach to Detecting Ransomware},\n  year = {2016},\n  keywords = {citracer, pending},\n  note = {citracer: pending at depth 0}\n}", "ris": "TY  - GEN\nTI  - UNVEIL: A Large-Scale, Automated Approach to Detecting Ransomware\nPY  - 2016\nKW  - citracer\nKW  - pending\nN1  - citracer: pending at depth 0\nER  -", "csv": ["R1-01", "UNVEIL: A Large-Scale, Automated Approach to Detecting Ransomware", "", "2016", "", "pending", "0", "", "", "", "", "0", "3", "0.116522", "0.0", "False", "False", "", ""]}, "R1-02": {"title": "The Aftermath of a Crypto-Ransomware Attack at a Large Academic Institution", "authors": [], "year": 2018, "publication_date": null, "status": "pending", "depth": 0, "url": null, "doi": null, "arxiv_id": null, "abstract": null, "citation_count": null, "keyword_hits": [], "keyword_hit_types": [], "keyword_hit_scores": [], "is_new": false, "depth_level": 0, "year_level": 3, "bibtex": "@misc{anon2018aftermath,\n  title = {The Aftermath of a Crypto-Ransomware Attack at a Large Academic Institution},\n  year = {2018},\n  keywords = {citracer, pending},\n  note = {citracer: pending at depth 0}\n}", "ris": "TY  - GEN\nTI  - The Aftermath of a Crypto-Ransomware Attack at a Large Academic Institution\nPY  - 2018\nKW  - citracer\nKW  - pending\nN1  - citracer: pending at depth 0\nER  -", "csv": ["R1-02", "The Aftermath of a Crypto-Ransomware Attack at a Large Academic Institution", "", "2018", "", "pending", "0", "", "", "", "", "0", "0", "0.060662", "0.0", "False", "False", "", ""]}, "R1-03": {"title": "Detecting Ransomware Despite I/O Overhead: A Practical Multi-Staged Approach", "authors": [], "year": 2025, "publication_date": null, "status": "pending", "depth": 0, "url": null, "doi": null, "arxiv_id": null, "abstract": null, "citation_count": null, "keyword_hits": [], "keyword_hit_types": [], "keyword_hit_scores": [], "is_new": false, "depth_level": 0, "year_level": 5, "bibtex": "@misc{anon2025detecting,\n  title = {Detecting Ransomware Despite I/O Overhead: A Practical Multi-Staged Approach},\n  year = {2025},\n  keywords = {citracer, pending},\n  note = {citracer: pending at depth 0}\n}", "ris": "TY  - GEN\nTI  - Detecting Ransomware Despite I/O Overhead: A Practical Multi-Staged Approach\nPY  - 2025\nKW  - citracer\nKW  - pending\nN1  - citracer: pending at depth 0\nER  -", "csv": ["R1-03", "Detecting Ransomware Despite I/O Overhead: A Practical Multi-Staged Approach", "", "2025", "", "pending", "0", "", "", "", "", "0", "0", "0.060662", "0.0", "False", "False", "", ""]}, "R1-04": {"title": "Ransom Access Memories: Achieving Practical Ransomware Protection in Cloud with DeftPunk", "authors": [], "year": 2024, "publication_date": null, "status": "pending", "depth": 0, "url": null, "doi": null, "arxiv_id": null, "abstract": null, "citation_count": null, "keyword_hits": [], "keyword_hit_types": [], "keyword_hit_scores": [], "is_new": false, "depth_level": 0, "year_level": 4, "bibtex": "@misc{anon2024ransom,\n  title = {Ransom Access Memories: Achieving Practical Ransomware Protection in Cloud with {DeftPunk}},\n  year = {2024},\n  keywords = {citracer, pending},\n  note = {citracer: pending at depth 0}\n}", "ris": "TY  - GEN\nTI  - Ransom Access Memories: Achieving Practical Ransomware Protection in Cloud with DeftPunk\nPY  - 2024\nKW  - citracer\nKW  - pending\nN1  - citracer: pending at depth 0\nER  -", "csv": ["R1-04", "Ransom Access Memories: Achieving Practical Ransomware Protection in Cloud with DeftPunk", "", "2024", "", "pending", "0", "", "", "", "", "0", "0", "0.060662", "0.0", "False", "False", "", ""]}, "R1-05": {"title": "The Ransomware Decade: The Creation of a Fine-Grained Dataset and a Longitudinal Study", "authors": [], "year": 2025, "publication_date": null, "status": "pending", "depth": 0, "url": null, "doi": null, "arxiv_id": null, "abstract": null, "citation_count": null, "keyword_hits": [], "keyword_hit_types": [], "keyword_hit_scores": [], "is_new": false, "depth_level": 0, "year_level": 5, "bibtex": "@misc{anon2025ransomware,\n  title = {The Ransomware Decade: The Creation of a Fine-Grained Dataset and a Longitudinal Study},\n  year = {2025},\n  keywords = {citracer, pending},\n  note = {citracer: pending at depth 0}\n}", "ris": "TY  - GEN\nTI  - The Ransomware Decade: The Creation of a Fine-Grained Dataset and a Longitudinal Study\nPY  - 2025\nKW  - citracer\nKW  - pending\nN1  - citracer: pending at depth 0\nER  -", "csv": ["R1-05", "The Ransomware Decade: The Creation of a Fine-Grained Dataset and a Longitudinal Study", "", "2025", "", "pending", "0", "", "", "", "", "0", "0", "0.060662", "0.0", "False", "False", "", ""]}, "R2-01": {"title": "ShieldFS: a self-healing, ransomware-aware filesystem", "authors": [], "year": 2016, "publication_date": null, "status": "pending", "depth": 1, "url": null, "doi": null, "arxiv_id": null, "abstract": null, "citation_count": null, "keyword_hits": [], "keyword_hit_types": [], "keyword_hit_scores": [], "is_new": false, "depth_level": 1, "year_level": 1, "bibtex": "@misc{anon2016shieldfs,\n  title = {{ShieldFS}: a self-healing, ransomware-aware filesystem},\n  year = {2016},\n  keywords = {citracer, pending},\n  note = {citracer: pending at depth 1}\n}", "ris": "TY  - GEN\nTI  - ShieldFS: a self-healing, ransomware-aware filesystem\nPY  - 2016\nKW  - citracer\nKW  - pending\nN1  - citracer: pending at depth 1\nER  -", "csv": ["R2-01", "ShieldFS: a self-healing, ransomware-aware filesystem", "", "2016", "", "pending", "1", "", "", "", "", "0", "2", "0.09074", "0.032407", "False", "False", "", ""]}, "R2-02": {"title": "Redemption: Real-Time Protection Against Ransomware at End-Hosts", "authors": [], "year": 2017, "publication_date": null, "status": "pending", "depth": 1, "url": null, "doi": null, "arxiv_id": null, "abstract": null, "citation_count": null, "keyword_hits": [], "keyword_hit_types": [], "keyword_hit_scores": [], "is_new": false, "depth_level": 1, "year_level": 2, "bibtex": "@misc{anon2017redemption,\n  title = {Redemption: Real-Time Protection Against Ransomware at End-Hosts},\n  year = {2017},\n  keywords = {citracer, pending},\n  note = {citracer: pending at depth 1}\n}", "ris": "TY  - GEN\nTI  - Redemption: Real-Time Protection Against Ransomware at End-Hosts\nPY  - 2017\nKW  - citracer\nKW  - pending\nN1  - citracer: pending at depth 1\nER  -", "csv": ["R2-02", "Redemption: Real-Time Protection Against Ransomware at End-Hosts", "", "2017", "", "pending", "1", "", "", "", "", "0", "3", "0.116522", "0.025463", "False", "False", "", ""]}, "R2-03": {"title": "PayBreak: Defense Against Cryptographic Ransomware", "authors": [], "year": 2017, "publication_date": null, "status": "pending", "depth": 1, "url": null, "doi": null, "arxiv_id": null, "abstract": null, "citation_count": null, "keyword_hits": [], "keyword_hit_types": [], "keyword_hit_scores": [], "is_new": false, "depth_level": 1, "year_level": 2, "bibtex": "@misc{anon2017paybreak,\n  title = {{PayBreak}: Defense Against Cryptographic Ransomware},\n  year = {2017},\n  keywords = {citracer, pending},\n  note = {citracer: pending at depth 1}\n}", "ris": "TY  - GEN\nTI  - PayBreak: Defense Against Cryptographic Ransomware\nPY  - 2017\nKW  - citracer\nKW  - pending\nN1  - citracer: pending at depth 1\nER  -", "csv": ["R2-03", "PayBreak: Defense Against Cryptographic Ransomware", "", "2017", "", "pending", "1", "", "", "", "", "0", "1", "0.073553", "0.011574", "False", "False", "", ""]}, "R3-02": {"title": "Cutting the Gordian Knot: A Look Under the Hood of Ransomware Attacks", "authors": [], "year": 2016, "publication_date": null, "status": "pending", "depth": 2, "url": null, "doi": null, "arxiv_id": null, "abstract": null, "citation_count": null, "keyword_hits": [], "keyword_hit_types": [], "keyword_hit_scores": [], "is_new": false, "depth_level": 2, "year_level": 1, "bibtex": "@misc{anon2016cutting,\n  title = {Cutting the Gordian Knot: A Look Under the Hood of Ransomware Attacks},\n  year = {2016},\n  keywords = {citracer, pending},\n  note = {citracer: pending at depth 2}\n}", "ris": "TY  - GEN\nTI  - Cutting the Gordian Knot: A Look Under the Hood of Ransomware Attacks\nPY  - 2016\nKW  - citracer\nKW  - pending\nN1  - citracer: pending at depth 2\nER  -", "csv": ["R3-02", "Cutting the Gordian Knot: A Look Under the Hood of Ransomware Attacks", "", "2016", "", "pending", "2", "", "", "", "", "0", "3", "0.22953", "0.0", "False", "False", "", ""]}, "R3-04": {"title": "Cryptovirology: Extortion-Based Security Threats and Countermeasures", "authors": [], "year": 1996, "publication_date": null, "status": "pending", "depth": 2, "url": null, "doi": null, "arxiv_id": null, "abstract": null, "citation_count": null, "keyword_hits": [], "keyword_hit_types": [], "keyword_hit_scores": [], "is_new": false, "depth_level": 2, "year_level": 0, "bibtex": "@misc{anon1996cryptovirology,\n  title = {Cryptovirology: Extortion-Based Security Threats and Countermeasures},\n  year = {1996},\n  keywords = {citracer, pending},\n  note = {citracer: pending at depth 2}\n}", "ris": "TY  - GEN\nTI  - Cryptovirology: Extortion-Based Security Threats and Countermeasures\nPY  - 1996\nKW  - citracer\nKW  - pending\nN1  - citracer: pending at depth 2\nER  -", "csv": ["R3-04", "Cryptovirology: Extortion-Based Security Threats and Countermeasures", "", "1996", "", "pending", "2", "", "", "", "", "0", "2", "0.130487", "0.0", "False", "False", "", ""]}};
+  const ANALYTICS = {"node_metrics": {"R1-01": {"betweenness": 0.0, "pagerank": 0.116522, "in_degree": 3, "out_degree": 0, "is_pivot": false}, "R1-02": {"betweenness": 0.0, "pagerank": 0.060662, "in_degree": 0, "out_degree": 4, "is_pivot": false}, "R1-03": {"betweenness": 0.0, "pagerank": 0.060662, "in_degree": 0, "out_degree": 3, "is_pivot": false}, "R1-04": {"betweenness": 0.0, "pagerank": 0.060662, "in_degree": 0, "out_degree": 2, "is_pivot": false}, "R1-05": {"betweenness": 0.0, "pagerank": 0.060662, "in_degree": 0, "out_degree": 0, "is_pivot": false}, "R2-01": {"betweenness": 0.032407, "pagerank": 0.09074, "in_degree": 2, "out_degree": 2, "is_pivot": false}, "R2-02": {"betweenness": 0.025463, "pagerank": 0.116522, "in_degree": 3, "out_degree": 1, "is_pivot": false}, "R2-03": {"betweenness": 0.011574, "pagerank": 0.073553, "in_degree": 1, "out_degree": 2, "is_pivot": false}, "R3-02": {"betweenness": 0.0, "pagerank": 0.22953, "in_degree": 3, "out_degree": 0, "is_pivot": false}, "R3-04": {"betweenness": 0.0, "pagerank": 0.130487, "in_degree": 2, "out_degree": 0, "is_pivot": false}}, "global": {"density": 0.155556, "avg_degree": 2.8, "connected_components": 2}, "timeline": [], "pivot_papers": []};
+  const CSV_COLUMNS = ["id", "title", "authors", "year", "publication_date", "status", "depth", "doi", "arxiv_id", "url", "citation_count", "keyword_hits", "in_degree", "pagerank", "betweenness", "is_pivot", "is_new", "passages", "abstract"];
+  const KEYWORD_SPECS = [];  // [{keyword, pattern, color}, ...]
+  const disabledStatus = new Set([]);
+  // Edge type filter: secondary (bibliographic) edges start hidden
+  const disabledEdgeTypes = new Set(["secondary"]);
+  const expandedHits = new Set();
+  const expandedAbstracts = new Set();
+  // Nodes the user has explicitly hidden via right-click. Independent of
+  // the legend status filter — both are OR'd together in applyFilter().
+  const manuallyHidden = new Set();
+
+  // ---- persistence ---------------------------------------------------
+  // Session key derived from the set of node ids, so:
+  //   - refreshing the page reloads the same state
+  //   - re-running citracer with different papers gets a fresh state
+  //   - re-running with the SAME set of papers still reloads state
+  function _sessionHash() {
+    const ids = Object.keys(NODE_DETAILS).sort().join("|");
+    let h = 0x811c9dc5;
+    for (let i = 0; i < ids.length; i++) {
+      h ^= ids.charCodeAt(i);
+      h = (h + ((h << 1) + (h << 4) + (h << 7) + (h << 8) + (h << 24))) >>> 0;
+    }
+    return h.toString(36);
+  }
+  const STATE_KEY = "citracer:" + _sessionHash();
+  let saveTimer = null;
+  let stateLoaded = false;
+
+  // --- Undo / Redo history ---
+  const _undoStack = [];
+  const _redoStack = [];
+  const _MAX_UNDO = 50;
+
+  function _captureSnapshot() {
+    const positions = (typeof network !== 'undefined' && network)
+      ? network.getPositions() : {};
+    return {
+      positions: JSON.parse(JSON.stringify(positions)),
+      disabledStatus: Array.from(disabledStatus),
+      disabledEdgeTypes: Array.from(disabledEdgeTypes),
+      manuallyHidden: Array.from(manuallyHidden),
+      layout: currentLayout,
+      sizeMode: currentSizeMode,
+      spread: currentSpread,
+      curvedEdges: curvedEdges,
+    };
+  }
+
+  function _applySnapshot(snap) {
+    // Positions
+    if (snap.positions && typeof network !== 'undefined' && network) {
+      const updates = [];
+      for (const id in snap.positions) {
+        const p = snap.positions[id];
+        if (p && typeof p.x === 'number' && typeof p.y === 'number') {
+          updates.push({ id: id, x: p.x, y: p.y });
+        }
+      }
+      if (updates.length) nodes.update(updates);
+    }
+    // Filters
+    disabledStatus.clear();
+    snap.disabledStatus.forEach(s => disabledStatus.add(s));
+    disabledEdgeTypes.clear();
+    snap.disabledEdgeTypes.forEach(t => disabledEdgeTypes.add(t));
+    manuallyHidden.clear();
+    snap.manuallyHidden.forEach(i => manuallyHidden.add(i));
+    // Controls
+    currentLayout = snap.layout;
+    currentSizeMode = snap.sizeMode;
+    currentSpread = snap.spread;
+    curvedEdges = snap.curvedEdges;
+    // Sync UI
+    const layoutSel = document.getElementById('citracer-layout');
+    if (layoutSel) layoutSel.value = currentLayout;
+    const sizeSel = document.getElementById('citracer-size');
+    if (sizeSel) sizeSel.value = currentSizeMode;
+    const spreadSl = document.getElementById('citracer-spread');
+    if (spreadSl) spreadSl.value = String(currentSpread);
+    const curvedCb = document.getElementById('citracer-curved');
+    if (curvedCb) curvedCb.checked = curvedEdges;
+    document.querySelectorAll('.legend-item').forEach(el => {
+      const s = el.getAttribute('data-status');
+      el.classList.toggle('disabled', disabledStatus.has(s));
+    });
+    document.querySelectorAll('.legend-edge-toggle').forEach(el => {
+      const t = el.getAttribute('data-edge-type');
+      el.classList.toggle('disabled', disabledEdgeTypes.has(t));
+    });
+    applyFilter();
+    applyCurvedEdges();
+  }
+
+  function _pushUndo() {
+    _undoStack.push(_captureSnapshot());
+    if (_undoStack.length > _MAX_UNDO) _undoStack.shift();
+    _redoStack.length = 0;  // clear redo on new action
+  }
+
+  function undo() {
+    if (_undoStack.length === 0) return;
+    _redoStack.push(_captureSnapshot());
+    _applySnapshot(_undoStack.pop());
+  }
+
+  function redo() {
+    if (_redoStack.length === 0) return;
+    _undoStack.push(_captureSnapshot());
+    _applySnapshot(_redoStack.pop());
+  }
+
+  function saveState() {
+    // Debounce so rapid events (slider drag, physics settling) don't spam
+    // localStorage writes.
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => {
+      _pushUndo();
+      try {
+        const positions = (typeof network !== 'undefined' && network)
+          ? network.getPositions() : {};
+        const state = {
+          v: 1,
+          positions: positions,
+          pinned: pinnedNodeId,
+          disabledStatus: Array.from(disabledStatus),
+          disabledEdgeTypes: Array.from(disabledEdgeTypes),
+          manuallyHidden: Array.from(manuallyHidden),
+          layout: currentLayout,
+          sizeMode: currentSizeMode,
+          spread: currentSpread,
+          curvedEdges: curvedEdges,
+        };
+        localStorage.setItem(STATE_KEY, JSON.stringify(state));
+        const reset = document.getElementById('citracer-reset');
+        if (reset) reset.classList.add('saved');
+      } catch (e) {
+        // quota exceeded / privacy mode / etc. — silently ignore
+      }
+    }, 300);
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STATE_KEY);
+      if (!raw) return null;
+      const state = JSON.parse(raw);
+      return state && state.v === 1 ? state : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function clearState() {
+    try { localStorage.removeItem(STATE_KEY); } catch (e) {}
+    const reset = document.getElementById('citracer-reset');
+    if (reset) reset.classList.remove('saved');
+  }
+
+  function applyLoadedState(state) {
+    // Apply filter / toggle state BEFORE positions so that applyFilter()
+    // can recompute sizes against the restored visibility set.
+    if (state.disabledStatus) {
+      disabledStatus.clear();
+      state.disabledStatus.forEach(s => disabledStatus.add(s));
+    }
+    if (state.disabledEdgeTypes) {
+      disabledEdgeTypes.clear();
+      state.disabledEdgeTypes.forEach(t => disabledEdgeTypes.add(t));
+    }
+    if (state.manuallyHidden) {
+      manuallyHidden.clear();
+      state.manuallyHidden.forEach(i => manuallyHidden.add(i));
+    }
+
+    // Sync UI classes to match the restored filter state
+    document.querySelectorAll('.legend-item').forEach(el => {
+      const s = el.getAttribute('data-status');
+      el.classList.toggle('disabled', disabledStatus.has(s));
+    });
+    document.querySelectorAll('.legend-edge-toggle').forEach(el => {
+      const t = el.getAttribute('data-edge-type');
+      el.classList.toggle('disabled', disabledEdgeTypes.has(t));
+    });
+
+    // Dropdowns
+    if (state.layout) {
+      currentLayout = state.layout;
+      const sel = document.getElementById('citracer-layout');
+      if (sel) sel.value = state.layout;
+    }
+    if (state.sizeMode) {
+      currentSizeMode = state.sizeMode;
+      const sel = document.getElementById('citracer-size');
+      if (sel) sel.value = state.sizeMode;
+    }
+    if (typeof state.spread === 'number') {
+      currentSpread = state.spread;
+      const slider = document.getElementById('citracer-spread');
+      if (slider) slider.value = String(state.spread);
+    }
+    if (typeof state.curvedEdges === 'boolean') {
+      curvedEdges = state.curvedEdges;
+      const cb = document.getElementById('citracer-curved');
+      if (cb) cb.checked = curvedEdges;
+    }
+
+    // Restored positions are applied in tryAttach() (needs the network)
+  }
+  let currentNodeId = null;
+  let pinnedNodeId = null;  // when set, hover updates are ignored
+  const DEFAULT_LAYOUT = "sugiyama-year";
+  let currentLayout = DEFAULT_LAYOUT;
+  let currentSizeMode = "betweenness";
+  let currentSpread = 1.0;  // multiplier applied on top of the layout's natural spacing
+  let curvedEdges = true;   // whether edges use smooth curves or straight lines
+
+  // Compile one regex per keyword so we can colour matches individually.
+  const KEYWORD_REGEXES = KEYWORD_SPECS.map(s => {
+    try {
+      return { regex: new RegExp(s.pattern, s.flags || 'gi'), color: s.color, keyword: s.keyword };
+    } catch (e) {
+      console.warn('citracer: regex compile failed for', s.keyword, e);
+      return null;
+    }
+  }).filter(Boolean);
+
+  function escapeHtml(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function highlightKeyword(text) {
+    // Collect every match across every keyword, then render them in
+    // sorted order so overlapping spans don't corrupt the output.
+    const safe = escapeHtml(text);
+    if (!KEYWORD_REGEXES.length) return safe;
+    const spans = [];
+    for (const kr of KEYWORD_REGEXES) {
+      kr.regex.lastIndex = 0;
+      let m;
+      while ((m = kr.regex.exec(safe)) !== null) {
+        spans.push({ start: m.index, end: m.index + m[0].length, color: kr.color });
+        if (m[0].length === 0) kr.regex.lastIndex++;  // avoid zero-width loop
+      }
+    }
+    if (!spans.length) return safe;
+    // Sort by start, drop overlaps (keep the earliest hit).
+    spans.sort((a, b) => a.start - b.start || a.end - b.end);
+    const nonOverlapping = [];
+    let lastEnd = -1;
+    for (const s of spans) {
+      if (s.start >= lastEnd) {
+        nonOverlapping.push(s);
+        lastEnd = s.end;
+      }
+    }
+    // Stitch the result.
+    let out = "";
+    let cursor = 0;
+    for (const s of nonOverlapping) {
+      out += safe.slice(cursor, s.start);
+      out += '<mark style="background:' + s.color + '">'
+           + safe.slice(s.start, s.end)
+           + '</mark>';
+      cursor = s.end;
+    }
+    out += safe.slice(cursor);
+    return out;
+  }
+
+  function renderMath(el) {
+    if (typeof renderMathInElement === 'function') {
+      try {
+        renderMathInElement(el, {
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$',  right: '$',  display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true},
+          ],
+          throwOnError: false,
+        });
+      } catch (e) { /* ignore */ }
+    }
+  }
+
+  function edgeType(e) {
+    // Secondary edges are added with `dashes: true`; primary edges aren't.
+    return e && e.dashes ? "secondary" : "primary";
+  }
+
+  function sizeForNode(nodeId, inDegree) {
+    const d = NODE_DETAILS[nodeId] || {};
+    const nm = (ANALYTICS.node_metrics || {})[nodeId] || {};
+    let base;
+    if (currentSizeMode === "keyword-hits") {
+      base = 18 + 3 * ((d.keyword_hits && d.keyword_hits.length) || 0);
+    } else if (currentSizeMode === "pagerank") {
+      // Scale PageRank (typically 0-1) to a visible size range
+      base = 16 + 200 * Math.sqrt(nm.pagerank || 0);
+    } else if (currentSizeMode === "betweenness") {
+      base = 16 + 120 * Math.sqrt(nm.betweenness || 0);
+    } else {
+      base = 16 + 6 * Math.sqrt(inDegree || 0);
+    }
+    if (d.status === "root") base = Math.max(base, 30);
+    return Math.min(base, 80);
+  }
+
+  // Original smooth settings per edge type, used when curvedEdges is on.
+  const SMOOTH_PRIMARY   = {type: "cubicBezier", forceDirection: "vertical", roundness: 0.4};
+  const SMOOTH_SECONDARY = {type: "curvedCW", roundness: 0.25};
+
+  function _smoothForEdge(e) {
+    if (!curvedEdges) return false;
+    return edgeType(e) === "secondary" ? SMOOTH_SECONDARY : SMOOTH_PRIMARY;
+  }
+
+  function applyCurvedEdges() {
+    if (typeof edges === 'undefined') return;
+    const updates = [];
+    edges.forEach(e => { updates.push({ id: e.id, smooth: _smoothForEdge(e) }); });
+    edges.update(updates);
+  }
+
+  function applyFilter() {
+    if (typeof nodes === 'undefined' || typeof edges === 'undefined') return;
+    // Nodes: hidden if status filter OR manual right-click hide
+    const nodeHidden = {};
+    const nodeUpdates = [];
+    nodes.forEach(n => {
+      const d = NODE_DETAILS[n.id];
+      const effectiveStatus = (d && d.is_new) ? "new" : (d ? d.status : "pending");
+      const statusHidden = disabledStatus.has(effectiveStatus);
+      const manualHidden = manuallyHidden.has(n.id);
+      const hidden = statusHidden || manualHidden;
+      nodeHidden[n.id] = hidden;
+      nodeUpdates.push({ id: n.id, hidden: hidden });
+    });
+    nodes.update(nodeUpdates);
+
+    // Update the "show N manually hidden" banner
+    const banner = document.getElementById('citracer-hidden-banner');
+    if (banner) {
+      if (manuallyHidden.size === 0) {
+        banner.classList.add('empty');
+      } else {
+        banner.classList.remove('empty');
+        banner.textContent = 'show ' + manuallyHidden.size + ' manually hidden';
+      }
+    }
+    // Edges: hide by edge type, AND respect node visibility.
+    // Also enforce the current smooth/straight preference so toggling
+    // nodes doesn't cause edges to flicker between curved and straight.
+    const edgeUpdates = [];
+    const inDegree = {};
+    nodes.forEach(n => { inDegree[n.id] = 0; });
+    edges.forEach(e => {
+      const typeHidden = disabledEdgeTypes.has(edgeType(e));
+      const endpointHidden = nodeHidden[e.from] || nodeHidden[e.to];
+      const hidden = typeHidden || endpointHidden;
+      edgeUpdates.push({ id: e.id, hidden: hidden, smooth: _smoothForEdge(e) });
+      if (!hidden) {
+        inDegree[e.to] = (inDegree[e.to] || 0) + 1;
+      }
+    });
+    edges.update(edgeUpdates);
+    // Recompute sizes from the visible in-degree we just counted
+    const sizeUpdates = [];
+    nodes.forEach(n => {
+      if (nodeHidden[n.id]) return;
+      const newSize = sizeForNode(n.id, inDegree[n.id] || 0);
+      if (n.size !== newSize) sizeUpdates.push({ id: n.id, size: newSize });
+    });
+    if (sizeUpdates.length) nodes.update(sizeUpdates);
+    // Recompute visible counts
+    let visibleNodes = 0;
+    nodes.forEach(n => { if (!n.hidden) visibleNodes++; });
+    let visibleEdges = 0;
+    edges.forEach(e => { if (!e.hidden) visibleEdges++; });
+    const counts = document.getElementById('citracer-counts');
+    if (counts) counts.textContent = visibleNodes + ' papers · ' + visibleEdges + ' citations';
+  }
+
+  // --- Layout switching ------------------------------------------------
+
+  // Physics parameters must be tuned to the graph size. BarnesHut-style
+  // repulsion scales with N² and a constant tuned for 20 nodes will
+  // literally throw 1000 nodes off the screen. These helpers pick
+  // appropriate values so the simulation stays bounded regardless of
+  // graph size.
+  function _tierForSize(n) {
+    if (n <= 60)   return "small";
+    if (n <= 200)  return "medium";
+    if (n <= 600)  return "large";
+    return "huge";
+  }
+
+  function _barnesHutParams(n) {
+    // Weaker repulsion + stronger central gravity as N grows, so the
+    // simulation has something to bound it and can't blow up.
+    switch (_tierForSize(n)) {
+      case "small":  return {
+        gravitationalConstant: -30000, centralGravity: 0.15,
+        springLength: 260, springConstant: 0.04,
+        damping: 0.6, avoidOverlap: 1.0,
+      };
+      case "medium": return {
+        gravitationalConstant: -12000, centralGravity: 0.30,
+        springLength: 200, springConstant: 0.04,
+        damping: 0.7, avoidOverlap: 0.9,
+      };
+      case "large":  return {
+        gravitationalConstant: -5000, centralGravity: 0.55,
+        springLength: 160, springConstant: 0.05,
+        damping: 0.85, avoidOverlap: 0.7,
+      };
+      case "huge":   return {
+        gravitationalConstant: -2500, centralGravity: 0.85,
+        springLength: 120, springConstant: 0.08,
+        damping: 0.95, avoidOverlap: 0.5,
+      };
+    }
+  }
+
+  function _forceAtlas2Params(n) {
+    switch (_tierForSize(n)) {
+      case "small":  return {
+        gravitationalConstant: -80, centralGravity: 0.008,
+        springLength: 220, springConstant: 0.08,
+        damping: 0.6, avoidOverlap: 1.0,
+      };
+      case "medium": return {
+        gravitationalConstant: -50, centralGravity: 0.02,
+        springLength: 180, springConstant: 0.08,
+        damping: 0.75, avoidOverlap: 0.9,
+      };
+      case "large":  return {
+        gravitationalConstant: -30, centralGravity: 0.05,
+        springLength: 140, springConstant: 0.10,
+        damping: 0.85, avoidOverlap: 0.7,
+      };
+      case "huge":   return {
+        gravitationalConstant: -15, centralGravity: 0.12,
+        springLength: 100, springConstant: 0.15,
+        damping: 0.95, avoidOverlap: 0.5,
+      };
+    }
+  }
+
+  function _stabilizationIterations(n) {
+    // More iterations for bigger graphs, but cap at something reasonable
+    // so the user never waits more than a few seconds.
+    if (n <= 60)   return 1500;
+    if (n <= 200)  return 2000;
+    if (n <= 600)  return 1200;
+    return 800;  // huge — we'd rather stop early than hang forever
+  }
+
+  // Hard safety cap: if stabilization doesn't fire its "done" event
+  // within this many milliseconds we force physics off anyway. Prevents
+  // a runaway simulation from looping forever on pathological inputs.
+  const STABILIZATION_SAFETY_TIMEOUT_MS = 6000;
+
+  // Upper bound on node velocity during physics runs. vis.js doesn't
+  // actually expose `maxVelocity` as a first-class option (only
+  // `minVelocity`), so this value is enforced via a `stabilizationProgress`
+  // listener below that clamps runaway speeds.
+  const HARD_MAX_VELOCITY = 50;
+
+  function _nodeCount() {
+    try { return nodes.length; } catch (e) { return 0; }
+  }
+
+  function _sugiyamaLayoutConfig(levelField) {
+    // Adapt spacing to graph size so nodes don't overlap on crowded levels
+    const n = _nodeCount();
+    let nodeSpacing, treeSpacing, levelSeparation;
+    if (n <= 20) {
+      nodeSpacing = 220; treeSpacing = 280; levelSeparation = 220;
+    } else if (n <= 60) {
+      nodeSpacing = 180; treeSpacing = 240; levelSeparation = 200;
+    } else if (n <= 150) {
+      nodeSpacing = 140; treeSpacing = 200; levelSeparation = 180;
+    } else {
+      nodeSpacing = 100; treeSpacing = 160; levelSeparation = 160;
+    }
+    return {
+      levelField: levelField,
+      layout: {
+        hierarchical: {
+          enabled: true, direction: "UD", sortMethod: "directed",
+          shakeTowards: "leaves", levelSeparation: levelSeparation,
+          nodeSpacing: nodeSpacing, treeSpacing: treeSpacing,
+          blockShifting: true, edgeMinimization: true,
+          parentCentralization: true,
+        }
+      },
+      physics: { enabled: false },
+    };
+  }
+
+  function layoutConfig(mode) {
+    const n = _nodeCount();
+    if (mode === "sugiyama-year")  return _sugiyamaLayoutConfig("year_level");
+    if (mode === "sugiyama-depth") return _sugiyamaLayoutConfig("depth_level");
+    if (mode === "force-directed") {
+      return {
+        levelField: null,
+        layout: { hierarchical: { enabled: false } },
+        physics: {
+          enabled: true, solver: "barnesHut",
+          barnesHut: _barnesHutParams(n),
+          stabilization: {
+            enabled: true,
+            iterations: _stabilizationIterations(n),
+            updateInterval: 50,
+            fit: true,
+          },
+          minVelocity: 0.75,
+          timestep: 0.3,
+          adaptiveTimestep: true,
+        },
+      };
+    }
+    if (mode === "fruchterman") {
+      return {
+        levelField: null,
+        layout: { hierarchical: { enabled: false } },
+        physics: {
+          enabled: true, solver: "forceAtlas2Based",
+          forceAtlas2Based: _forceAtlas2Params(n),
+          stabilization: {
+            enabled: true,
+            iterations: _stabilizationIterations(n),
+            updateInterval: 50,
+            fit: true,
+          },
+          minVelocity: 0.75,
+          timestep: 0.3,
+          adaptiveTimestep: true,
+        },
+      };
+    }
+    return null;
+  }
+
+  function applySpread(newMultiplier) {
+    // Scale every node's position from the current centroid, so the graph
+    // stretches or compresses around its middle without losing its shape.
+    if (typeof network === 'undefined' || !network) return;
+    const positions = network.getPositions();
+    const ids = Object.keys(positions);
+    if (!ids.length) return;
+    let cx = 0, cy = 0;
+    for (const id of ids) { cx += positions[id].x; cy += positions[id].y; }
+    cx /= ids.length; cy /= ids.length;
+    const ratio = newMultiplier / currentSpread;
+    currentSpread = newMultiplier;
+    const updates = [];
+    for (const id of ids) {
+      updates.push({
+        id: id,
+        x: cx + (positions[id].x - cx) * ratio,
+        y: cy + (positions[id].y - cy) * ratio,
+      });
+    }
+    nodes.update(updates);
+    network.fit();
+  }
+
+  function resetSpreadSlider() {
+    currentSpread = 1.0;
+    const slider = document.getElementById('citracer-spread');
+    if (slider) slider.value = '1';
+  }
+
+  let _safetyTimer = null;
+
+  function switchLayout(mode) {
+    const cfg = layoutConfig(mode);
+    if (!cfg) return;
+    currentLayout = mode;
+    resetSpreadSlider();
+
+    if (_safetyTimer) { clearTimeout(_safetyTimer); _safetyTimer = null; }
+
+    if (cfg.levelField) {
+      const updates = [];
+      nodes.forEach(n => {
+        const d = NODE_DETAILS[n.id];
+        if (d && d[cfg.levelField] !== undefined) {
+          updates.push({ id: n.id, level: d[cfg.levelField] });
+        }
+      });
+      if (updates.length) nodes.update(updates);
+    }
+
+    network.setOptions({ layout: cfg.layout, physics: cfg.physics });
+
+    if (mode.startsWith("sugiyama")) {
+      setTimeout(() => {
+        network.setOptions({ layout: { hierarchical: { enabled: false } } });
+        // Fix overlapping nodes: vis.js sometimes stacks nodes at the
+        // exact same position when multiple nodes share a level. Detect
+        // collisions and spread them apart horizontally.
+        const positions = network.getPositions();
+        const byPos = {};
+        for (const id in positions) {
+          const p = positions[id];
+          const key = Math.round(p.x) + ',' + Math.round(p.y);
+          if (!byPos[key]) byPos[key] = [];
+          byPos[key].push(id);
+        }
+        const fixUpdates = [];
+        for (const key in byPos) {
+          const group = byPos[key];
+          if (group.length <= 1) continue;
+          const p = positions[group[0]];
+          const spacing = 120;
+          const startX = p.x - (group.length - 1) * spacing / 2;
+          group.forEach((id, i) => {
+            fixUpdates.push({ id: id, x: startX + i * spacing, y: p.y });
+          });
+        }
+        if (fixUpdates.length) nodes.update(fixUpdates);
+        applyCurvedEdges();
+        network.fit();
+      }, 120);
+    } else {
+      network.once("stabilizationIterationsDone", () => {
+        network.setOptions({ physics: { enabled: false } });
+        if (_safetyTimer) { clearTimeout(_safetyTimer); _safetyTimer = null; }
+        applyCurvedEdges();
+        network.fit();
+      });
+
+      _safetyTimer = setTimeout(() => {
+        network.setOptions({ physics: { enabled: false } });
+        applyCurvedEdges();
+        network.fit();
+      }, STABILIZATION_SAFETY_TIMEOUT_MS);
+    }
+  }
+
+  function showInfo(nodeId) {
+    const d = NODE_DETAILS[nodeId];
+    if (!d) return;
+    const authors = (d.authors || []).slice(0, 8).join(', ')
+                  + ((d.authors || []).length > 8 ? ', et al.' : '');
+    let html = '<h3>' + escapeHtml(d.title) + '</h3>';
+    html += '<div class="meta">';
+    if (authors) html += escapeHtml(authors) + '<br>';
+    if (d.publication_date) html += 'Published: ' + d.publication_date + ' &middot; ';
+    else if (d.year) html += 'Year: ' + d.year + ' &middot; ';
+    else html += 'Year: unknown &middot; ';
+    if (d.citation_count != null) html += 'Citations: ' + d.citation_count + ' &middot; ';
+    html += 'Status: <b>' + escapeHtml(d.status === 'pending' ? '보존 인용망에서 가져옴' : d.status) + '</b>';
+    if (d.is_new) html += ' <span style="background:#ff8c00;color:#fff;padding:1px 6px;border-radius:3px;font-size:11px;font-weight:bold;">NEW</span>';
+    html += ' &middot; depth ' + d.depth;
+    html += '</div>';
+    // Per-node analytics
+    const nm = (ANALYTICS.node_metrics || {})[nodeId];
+    if (nm) {
+      html += '<div class="meta" style="color:#666;">';
+      html += 'PageRank: ' + nm.pagerank.toFixed(4) + ' &middot; ';
+      html += '매개중심성: ' + nm.betweenness.toFixed(4) + ' &middot; ';
+      html += 'In: ' + nm.in_degree + ' &middot; Out: ' + nm.out_degree;
+      if (nm.is_pivot) html += ' &middot; <b style="color:#d62728;">PIVOT</b>';
+      html += '</div>';
+    }
+    if (d.url) {
+      html += '<div><a href="' + escapeHtml(d.url) + '" target="_blank">open ↗</a></div>';
+    }
+    if (d.abstract) {
+      const abstractExpanded = expandedAbstracts.has(nodeId);
+      html += '<details class="abstract-block"'
+            + (abstractExpanded ? ' open' : '')
+            + ' data-node-id="' + escapeHtml(nodeId) + '">'
+            + '<summary>abstract</summary>'
+            + '<div class="abstract-body">' + escapeHtml(d.abstract) + '</div>'
+            + '</details>';
+    }
+    if (d.keyword_hits && d.keyword_hits.length) {
+      const expanded = expandedHits.has(nodeId);
+      const hitTypes = d.keyword_hit_types || [];
+      const nSemantic = hitTypes.filter(t => t === "semantic").length;
+      const nRegex = d.keyword_hits.length - nSemantic;
+      let hitsLabel = d.keyword_hits.length + ' keyword hit(s)';
+      if (nSemantic > 0 && nRegex > 0) {
+        hitsLabel += ' <span style="color:#888;font-weight:normal;">(' + nRegex + ' regex + ' + nSemantic + ' semantic)</span>';
+      } else if (nSemantic > 0) {
+        hitsLabel += ' <span style="color:#888;font-weight:normal;">(semantic)</span>';
+      }
+      const visibleCount = expanded ? d.keyword_hits.length : Math.min(5, d.keyword_hits.length);
+      html += '<div class="hits"><b>' + hitsLabel + '</b>';
+      const hitScores = d.keyword_hit_scores || [];
+      for (let hi = 0; hi < visibleCount; hi++) {
+        const isSem = hitTypes[hi] === "semantic";
+        if (isSem) {
+          const score = hitScores[hi] ? hitScores[hi].toFixed(2) : '?';
+          html += '<div class="hit-snippet" style="border-left:3px solid #9c27b0;padding-left:8px;">'
+                + '<span style="background:#9c27b0;color:#fff;padding:1px 5px;border-radius:3px;font-size:10px;font-weight:bold;">SEM ' + score + '</span> '
+                + '<span style="color:#888;font-size:11px;">conceptual match</span>'
+                + '<br>' + escapeHtml(d.keyword_hits[hi])
+                + '</div>';
+        } else {
+          html += '<div class="hit-snippet">' + highlightKeyword(d.keyword_hits[hi]) + '</div>';
+        }
+      }
+      if (d.keyword_hits.length > 5) {
+        if (expanded) {
+          html += '<div class="hits-toggle" data-node-id="'
+                + escapeHtml(nodeId) + '" data-action="collapse">show fewer</div>';
+        } else {
+          html += '<div class="hits-toggle" data-node-id="'
+                + escapeHtml(nodeId) + '" data-action="expand">show '
+                + (d.keyword_hits.length - 5) + ' more</div>';
+        }
+      }
+      html += '</div>';
+    }
+    html += ({"R1-01": "\u003ch4>R1-01 · 보존 인용망\u003c/h4>\u003cp>탐지 · 인공 사용자 환경에서 랜섬웨어가 사용자 데이터와 상호작용하는 방식을 동적으로 분석한다.\u003c/p>\u003ch4>연결 및 원장 근거\u003c/h4>\u003cul>\u003cli>R1-02 → R1-01\u003cbr>ledger/round2_trace.tsv: R1-02 PDF 3,15\u003c/li>\u003cli>R1-03 → R1-01\u003cbr>ledger/round2_trace.tsv: R1-03 PDF 14\u003c/li>\u003cli>R1-04 → R1-01\u003cbr>ledger/round2_trace.tsv: R1-04 PDF 17\u003c/li>\u003c/ul>", "R1-02": "\u003ch4>R1-02 · 보존 인용망\u003c/h4>\u003cp>피해·복구 · 실제 대학 랜섬웨어 사고의 기술적 비용, 생산성 손실, 사회적 비용을 분석한다.\u003c/p>\u003ch4>연결 및 원장 근거\u003c/h4>\u003cul>\u003cli>R1-02 → R1-01\u003cbr>ledger/round2_trace.tsv: R1-02 PDF 3,15\u003c/li>\u003cli>R1-02 → R2-01\u003cbr>ledger/round2_trace.tsv: R1-02 PDF 3,15\u003c/li>\u003cli>R1-02 → R2-02\u003cbr>ledger/round2_trace.tsv: R1-02 PDF 15\u003c/li>\u003cli>R1-02 → R2-03\u003cbr>ledger/round2_trace.tsv: R1-02 PDF 3,15\u003c/li>\u003c/ul>", "R1-03": "\u003ch4>R1-03 · 보존 인용망\u003c/h4>\u003cp>탐지 · I/O 모니터링의 비용 문제를 다단계 탐지 방식으로 다룬다.\u003c/p>\u003ch4>연결 및 원장 근거\u003c/h4>\u003cul>\u003cli>R1-03 → R1-01\u003cbr>ledger/round2_trace.tsv: R1-03 PDF 14\u003c/li>\u003cli>R1-03 → R2-01\u003cbr>ledger/round2_trace.tsv: R1-03 PDF 14\u003c/li>\u003cli>R1-03 → R2-02\u003cbr>ledger/round2_trace.tsv: R1-03 PDF 14\u003c/li>\u003c/ul>", "R1-04": "\u003ch4>R1-04 · 보존 인용망\u003c/h4>\u003cp>탐지·복구 · 클라우드 블록 스토리지에서 탐지와 스냅샷 기반 데이터 손실 완화를 결합한다.\u003c/p>\u003ch4>연결 및 원장 근거\u003c/h4>\u003cul>\u003cli>R1-04 → R1-01\u003cbr>ledger/round2_trace.tsv: R1-04 PDF 17\u003c/li>\u003cli>R1-04 → R2-02\u003cbr>ledger/round2_trace.tsv: R1-04 PDF 17\u003c/li>\u003c/ul>", "R1-05": "\u003ch4>R1-05 · 보존 인용망\u003c/h4>\u003cp>공격 흐름·데이터셋 · 장기간 랜섬웨어 공격 환경을 세분화한 데이터셋으로 연구한다.\u003c/p>\u003ch4>연결 및 원장 근거\u003c/h4>\u003cp>이 인용망에 연결 근거 없음\u003c/p>", "R2-01": "\u003ch4>R2-01 · 보존 인용망\u003c/h4>\u003ch4>연결 및 원장 근거\u003c/h4>\u003cul>\u003cli>R1-02 → R2-01\u003cbr>ledger/round2_trace.tsv: R1-02 PDF 3,15\u003c/li>\u003cli>R1-03 → R2-01\u003cbr>ledger/round2_trace.tsv: R1-03 PDF 14\u003c/li>\u003cli>R2-01 → R3-02\u003cbr>ledger/round3_trace.tsv: R2-01 PDF 11\u003c/li>\u003cli>R2-01 → R3-04\u003cbr>ledger/round3_trace.tsv: R2-01 PDF 11\u003c/li>\u003c/ul>", "R2-02": "\u003ch4>R2-02 · 보존 인용망\u003c/h4>\u003ch4>연결 및 원장 근거\u003c/h4>\u003cul>\u003cli>R1-02 → R2-02\u003cbr>ledger/round2_trace.tsv: R1-02 PDF 15\u003c/li>\u003cli>R1-03 → R2-02\u003cbr>ledger/round2_trace.tsv: R1-03 PDF 14\u003c/li>\u003cli>R1-04 → R2-02\u003cbr>ledger/round2_trace.tsv: R1-04 PDF 17\u003c/li>\u003cli>R2-02 → R3-02\u003cbr>ledger/round3_trace.tsv: R2-02 PDF 21\u003c/li>\u003c/ul>", "R2-03": "\u003ch4>R2-03 · 보존 인용망\u003c/h4>\u003ch4>연결 및 원장 근거\u003c/h4>\u003cul>\u003cli>R1-02 → R2-03\u003cbr>ledger/round2_trace.tsv: R1-02 PDF 3,15\u003c/li>\u003cli>R2-03 → R3-02\u003cbr>ledger/round3_trace.tsv: R2-03 PDF 12\u003c/li>\u003cli>R2-03 → R3-04\u003cbr>ledger/round3_trace.tsv: R2-03 PDF 12\u003c/li>\u003c/ul>", "R3-02": "\u003ch4>R3-02 · 보존 인용망\u003c/h4>\u003ch4>연결 및 원장 근거\u003c/h4>\u003cul>\u003cli>R2-01 → R3-02\u003cbr>ledger/round3_trace.tsv: R2-01 PDF 11\u003c/li>\u003cli>R2-02 → R3-02\u003cbr>ledger/round3_trace.tsv: R2-02 PDF 21\u003c/li>\u003cli>R2-03 → R3-02\u003cbr>ledger/round3_trace.tsv: R2-03 PDF 12\u003c/li>\u003c/ul>", "R3-04": "\u003ch4>R3-04 · 보존 인용망\u003c/h4>\u003ch4>연결 및 원장 근거\u003c/h4>\u003cul>\u003cli>R2-01 → R3-04\u003cbr>ledger/round3_trace.tsv: R2-01 PDF 11\u003c/li>\u003cli>R2-03 → R3-04\u003cbr>ledger/round3_trace.tsv: R2-03 PDF 12\u003c/li>\u003c/ul>"})[nodeId] || "";
+    currentNodeId = nodeId;
+    const body = document.getElementById('citracer-info-body');
+    body.innerHTML = html;
+    document.getElementById('citracer-info').style.display = 'block';
+    renderMath(body);
+  }
+
+  // Event delegation for the show-more / show-fewer toggle
+  document.getElementById('citracer-info-body').addEventListener('click', (ev) => {
+    const t = ev.target.closest('.hits-toggle');
+    if (!t) return;
+    const id = t.getAttribute('data-node-id');
+    if (t.getAttribute('data-action') === 'expand') {
+      expandedHits.add(id);
+    } else {
+      expandedHits.delete(id);
+    }
+    showInfo(id);
+  });
+
+  // Event delegation for the abstract <details> — remember its open state
+  // so hover re-renders don't collapse it.
+  document.getElementById('citracer-info-body').addEventListener('toggle', (ev) => {
+    const det = ev.target;
+    if (!det || det.tagName !== 'DETAILS' || !det.classList.contains('abstract-block')) return;
+    const id = det.getAttribute('data-node-id');
+    if (!id) return;
+    if (det.open) expandedAbstracts.add(id);
+    else expandedAbstracts.delete(id);
+  }, true);  // useCapture=true because `toggle` doesn't bubble
+
+  document.querySelectorAll('.legend-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const status = el.getAttribute('data-status');
+      if (disabledStatus.has(status)) {
+        disabledStatus.delete(status);
+        el.classList.remove('disabled');
+      } else {
+        disabledStatus.add(status);
+        el.classList.add('disabled');
+      }
+      applyFilter();
+      saveState();
+    });
+  });
+
+  document.querySelectorAll('.legend-edge-toggle').forEach(el => {
+    el.addEventListener('click', () => {
+      const t = el.getAttribute('data-edge-type');
+      if (disabledEdgeTypes.has(t)) {
+        disabledEdgeTypes.delete(t);
+        el.classList.remove('disabled');
+      } else {
+        disabledEdgeTypes.add(t);
+        el.classList.add('disabled');
+      }
+      applyFilter();
+      saveState();
+    });
+  });
+
+  // Layout dropdown
+  const layoutSelect = document.getElementById('citracer-layout');
+  if (layoutSelect) {
+    layoutSelect.value = DEFAULT_LAYOUT;
+    layoutSelect.addEventListener('change', (ev) => {
+      switchLayout(ev.target.value);
+      saveState();
+    });
+  }
+
+  // Size mode dropdown
+  const sizeSelect = document.getElementById('citracer-size');
+  if (sizeSelect) {
+    sizeSelect.addEventListener('change', (ev) => {
+      currentSizeMode = ev.target.value;
+      applyFilter();  // triggers a size recomputation
+      saveState();
+    });
+  }
+
+  // Curved edges checkbox
+  const curvedCheckbox = document.getElementById('citracer-curved');
+  if (curvedCheckbox) {
+    curvedCheckbox.addEventListener('change', (ev) => {
+      curvedEdges = ev.target.checked;
+      applyCurvedEdges();
+      saveState();
+    });
+  }
+
+  // Spread slider: rescales node positions around the centroid. Using
+  // 'input' makes it live during the drag.
+  const spreadSlider = document.getElementById('citracer-spread');
+  if (spreadSlider) {
+    spreadSlider.addEventListener('input', (ev) => {
+      applySpread(parseFloat(ev.target.value));
+      saveState();
+    });
+  }
+
+  // Export PNG — renders the graph to a large offscreen canvas manually
+  // (vis.js canvas scaling is unreliable for export, so we draw nodes/edges
+  // ourselves using the same position/color/size data as the SVG exporter)
+  const exportBtn = document.getElementById('citracer-export-png');
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      if (typeof network === 'undefined' || !network) return;
+      const scale = parseInt(document.getElementById('citracer-export-scale').value) || 3;
+      exportBtn.textContent = 'Rendering...';
+      exportBtn.disabled = true;
+
+      network.fit();
+      setTimeout(() => {
+        try {
+          const positions = network.getPositions();
+          const allNodeIds = Object.keys(positions);
+          if (!allNodeIds.length) { exportBtn.textContent = 'PNG'; exportBtn.disabled = false; return; }
+
+          // Bounding box
+          let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+          allNodeIds.forEach(id => {
+            const p = positions[id];
+            if (p.x < minX) minX = p.x;
+            if (p.y < minY) minY = p.y;
+            if (p.x > maxX) maxX = p.x;
+            if (p.y > maxY) maxY = p.y;
+          });
+          const pad = 120;
+          minX -= pad; minY -= pad; maxX += pad; maxY += pad;
+          const w = maxX - minX;
+          const h = maxY - minY;
+
+          const canvas = document.createElement('canvas');
+          canvas.width = w * scale;
+          canvas.height = h * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.scale(scale, scale);
+          ctx.translate(-minX, -minY);
+
+          // White background
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(minX, minY, w, h);
+
+          const colors = {
+            root: '#1f77b4', analyzed: '#2ca02c', no_match: '#9e9e9e',
+            unavailable: '#d62728', pending: '#cccccc', new: '#ff8c00',
+          };
+
+          // Draw edges
+          edges.forEach(e => {
+            if (e.hidden) return;
+            const from = positions[e.from];
+            const to = positions[e.to];
+            if (!from || !to) return;
+            const isSec = edgeType(e) === 'secondary';
+
+            const dx = to.x - from.x, dy = to.y - from.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < 1) return;
+            const toNode = nodes.get(e.to);
+            const r = (toNode && toNode.size) || 20;
+            const ratio = Math.max(0, (dist - r - 6) / dist);
+            const tx = from.x + dx * ratio, ty = from.y + dy * ratio;
+
+            ctx.save();
+            ctx.strokeStyle = isSec ? '#5c87b5' : '#444444';
+            ctx.lineWidth = isSec ? 1.5 : 2.5;
+            ctx.globalAlpha = isSec ? 0.75 : 0.9;
+            if (isSec) ctx.setLineDash([6, 6]);
+
+            if (curvedEdges) {
+              const mx = (from.x + tx) / 2, my = (from.y + ty) / 2;
+              const nx = -(ty - from.y), ny = tx - from.x;
+              const nl = Math.sqrt(nx * nx + ny * ny) || 1;
+              const curve = isSec ? 0.15 : 0.10;
+              const cpx = mx + nx / nl * dist * curve;
+              const cpy = my + ny / nl * dist * curve;
+              ctx.beginPath();
+              ctx.moveTo(from.x, from.y);
+              ctx.quadraticCurveTo(cpx, cpy, tx, ty);
+              ctx.stroke();
+            } else {
+              ctx.beginPath();
+              ctx.moveTo(from.x, from.y);
+              ctx.lineTo(tx, ty);
+              ctx.stroke();
+            }
+
+            // Arrowhead
+            const angle = Math.atan2(ty - from.y, tx - from.x);
+            const aLen = 10;
+            ctx.setLineDash([]);
+            ctx.fillStyle = ctx.strokeStyle;
+            ctx.beginPath();
+            ctx.moveTo(tx, ty);
+            ctx.lineTo(tx - aLen * Math.cos(angle - 0.35), ty - aLen * Math.sin(angle - 0.35));
+            ctx.lineTo(tx - aLen * Math.cos(angle + 0.35), ty - aLen * Math.sin(angle + 0.35));
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+          });
+
+          // Draw nodes
+          allNodeIds.forEach(id => {
+            const n = nodes.get(id);
+            if (!n || n.hidden) return;
+            const p = positions[id];
+            const d = NODE_DETAILS[id] || {};
+            const effectiveStatus = d.is_new ? 'new' : (d.status || 'pending');
+            const fill = colors[effectiveStatus] || colors.pending;
+            const r = n.size || 20;
+
+            ctx.save();
+            ctx.globalAlpha = 0.9;
+            ctx.fillStyle = fill;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, r, 0, Math.PI * 2);
+            ctx.fill();
+            if (effectiveStatus === 'root') {
+              ctx.lineWidth = 3;
+              ctx.strokeStyle = '#0b3d61';
+              ctx.stroke();
+            }
+            ctx.restore();
+
+            // Full label
+            const title = d.title || n.label || '';
+            const year = d.year ? String(d.year) : '';
+            const label = title + (year ? ' (' + year + ')' : '');
+            if (label) {
+              ctx.save();
+              ctx.font = '11px system-ui, sans-serif';
+              ctx.fillStyle = '#222222';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'top';
+              ctx.fillText(label, p.x, p.y + r + 4);
+              ctx.restore();
+            }
+          });
+
+          // Download
+          canvas.toBlob((blob) => {
+            const a = document.createElement('a');
+            a.download = 'citracer-graph.png';
+            a.href = URL.createObjectURL(blob);
+            a.click();
+            URL.revokeObjectURL(a.href);
+            exportBtn.textContent = 'PNG';
+            exportBtn.disabled = false;
+          }, 'image/png');
+        } catch (e) {
+          console.error('PNG export failed:', e);
+          exportBtn.textContent = 'PNG';
+          exportBtn.disabled = false;
+          alert('PNG export failed. See console for details.');
+        }
+      }, 600);
+    });
+  }
+
+  // Export SVG — builds a vector graphic from the vis.js node/edge data
+  // --- Bibliography export of the visible papers -------------------------
+  function visiblePaperIds() {
+    const visible = new Set();
+    if (typeof nodes !== 'undefined') nodes.forEach(n => { if (!n.hidden) visible.add(n.id); });
+    return Object.keys(NODE_DETAILS).filter(id => visible.has(id));
+  }
+  function downloadText(text, filename, mime) {
+    const blob = new Blob([text], { type: mime + ';charset=utf-8' });
+    const a = document.createElement('a');
+    a.download = filename;
+    a.href = URL.createObjectURL(blob);
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+  function csvCell(v) {
+    const s = v == null ? '' : String(v);
+    return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+  const PAPER_EXPORTS = {
+    'citracer-export-bib': () => downloadText(
+      visiblePaperIds().map(id => NODE_DETAILS[id].bibtex).join('\n\n') + '\n',
+      'citracer-papers.bib', 'application/x-bibtex'),
+    'citracer-export-ris': () => downloadText(
+      visiblePaperIds().map(id => NODE_DETAILS[id].ris).join('\n\n') + '\n',
+      'citracer-papers.ris', 'application/x-research-info-systems'),
+    'citracer-export-csv': () => downloadText(
+      // BOM so Excel reads the file as UTF-8
+      '\ufeff' + [CSV_COLUMNS].concat(visiblePaperIds().map(id => NODE_DETAILS[id].csv))
+        .map(row => row.map(csvCell).join(',')).join('\r\n') + '\r\n',
+      'citracer-papers.csv', 'text/csv'),
+  };
+  Object.entries(PAPER_EXPORTS).forEach(([id, fn]) => {
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', fn);
+  });
+
+  const svgBtn = document.getElementById('citracer-export-svg');
+  if (svgBtn) {
+    svgBtn.addEventListener('click', () => {
+      if (typeof network === 'undefined' || !network) return;
+      svgBtn.textContent = 'Rendering...';
+      svgBtn.disabled = true;
+
+      try {
+        const positions = network.getPositions();
+        const allNodeIds = Object.keys(positions);
+        if (!allNodeIds.length) { svgBtn.textContent = 'SVG'; svgBtn.disabled = false; return; }
+
+        // Compute bounding box
+        let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        allNodeIds.forEach(id => {
+          const p = positions[id];
+          if (p.x < minX) minX = p.x;
+          if (p.y < minY) minY = p.y;
+          if (p.x > maxX) maxX = p.x;
+          if (p.y > maxY) maxY = p.y;
+        });
+        const pad = 150;  // enough for full-length labels
+        minX -= pad; minY -= pad; maxX += pad; maxY += pad;
+        const w = maxX - minX;
+        const h = maxY - minY;
+
+        // Status colors (same as Python STATUS_COLORS)
+        const colors = {
+          root: '#1f77b4', analyzed: '#2ca02c', no_match: '#9e9e9e',
+          unavailable: '#d62728', pending: '#cccccc', new: '#ff8c00',
+        };
+
+        let svg = '<?xml version="1.0" encoding="UTF-8"?>\n';
+        svg += '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h + '" viewBox="' + minX + ' ' + minY + ' ' + w + ' ' + h + '">\n';
+        svg += '<rect x="' + minX + '" y="' + minY + '" width="' + w + '" height="' + h + '" fill="white"/>\n';
+
+        // Arrowhead marker
+        svg += '<defs><marker id="arrow" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="6" orient="auto"><path d="M0,0 L10,3 L0,6 Z" fill="#444"/></marker>';
+        svg += '<marker id="arrow-sec" viewBox="0 0 10 6" refX="10" refY="3" markerWidth="8" markerHeight="6" orient="auto"><path d="M0,0 L10,3 L0,6 Z" fill="#5c87b5"/></marker></defs>\n';
+
+        // Draw edges (curved or straight, matching the current UI toggle)
+        edges.forEach(e => {
+          if (e.hidden) return;
+          const from = positions[e.from];
+          const to = positions[e.to];
+          if (!from || !to) return;
+          const isSec = edgeType(e) === 'secondary';
+          const stroke = isSec ? '#5c87b5' : '#444444';
+          const strokeW = isSec ? 1.5 : 2.5;
+          const opacity = isSec ? 0.75 : 0.9;
+          const dash = isSec ? ' stroke-dasharray="6,6"' : '';
+          const marker = isSec ? 'url(#arrow-sec)' : 'url(#arrow)';
+
+          // Shorten endpoint so arrowhead doesn't overlap the node circle
+          const dx = to.x - from.x, dy = to.y - from.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 1) return;
+          const toNode = nodes.get(e.to);
+          const r = (toNode && toNode.size) || 20;
+          const ratio = Math.max(0, (dist - r - 2) / dist);
+          const tx = from.x + dx * ratio, ty = from.y + dy * ratio;
+
+          if (curvedEdges) {
+            // Quadratic Bézier: control point perpendicular to the midpoint
+            const mx = (from.x + tx) / 2, my = (from.y + ty) / 2;
+            const nx = -(ty - from.y), ny = tx - from.x;
+            const nl = Math.sqrt(nx * nx + ny * ny) || 1;
+            const curve = isSec ? 0.15 : 0.10;
+            const cx = mx + nx / nl * dist * curve;
+            const cy = my + ny / nl * dist * curve;
+            svg += '<path d="M' + from.x.toFixed(1) + ',' + from.y.toFixed(1)
+                  + ' Q' + cx.toFixed(1) + ',' + cy.toFixed(1)
+                  + ' ' + tx.toFixed(1) + ',' + ty.toFixed(1)
+                  + '" fill="none" stroke="' + stroke + '" stroke-width="' + strokeW + '" opacity="' + opacity + '"' + dash + ' marker-end="' + marker + '"/>\n';
+          } else {
+            svg += '<line x1="' + from.x.toFixed(1) + '" y1="' + from.y.toFixed(1) + '" x2="' + tx.toFixed(1) + '" y2="' + ty.toFixed(1) + '" stroke="' + stroke + '" stroke-width="' + strokeW + '" opacity="' + opacity + '"' + dash + ' marker-end="' + marker + '"/>\n';
+          }
+        });
+
+        // Draw nodes with full titles (not the truncated vis.js label)
+        allNodeIds.forEach(id => {
+          const n = nodes.get(id);
+          if (!n || n.hidden) return;
+          const p = positions[id];
+          const d = NODE_DETAILS[id] || {};
+          const effectiveStatus = d.is_new ? 'new' : (d.status || 'pending');
+          const fill = colors[effectiveStatus] || colors.pending;
+          const r = n.size || 20;
+          const borderW = effectiveStatus === 'root' ? 3 : 1;
+
+          svg += '<circle cx="' + p.x.toFixed(1) + '" cy="' + p.y.toFixed(1) + '" r="' + r + '" fill="' + fill + '" stroke="' + fill + '" stroke-width="' + borderW + '" opacity="0.9"/>\n';
+
+          // Full title + year from node details (not the truncated vis.js label)
+          const title = d.title || n.label || '';
+          const year = d.publication_date || (d.year ? String(d.year) : '');
+          const fullLabel = title + (year ? ' (' + year + ')' : '');
+          if (fullLabel) {
+            const escaped = fullLabel.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+            svg += '<text x="' + p.x.toFixed(1) + '" y="' + (p.y + r + 14).toFixed(1) + '" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" fill="#222">' + escaped + '</text>\n';
+          }
+        });
+
+        svg += '</svg>';
+
+        // Download
+        const blob = new Blob([svg], { type: 'image/svg+xml;charset=utf-8' });
+        const a = document.createElement('a');
+        a.download = 'citracer-graph.svg';
+        a.href = URL.createObjectURL(blob);
+        a.click();
+        URL.revokeObjectURL(a.href);
+      } catch (e) {
+        console.error('SVG export failed:', e);
+        alert('SVG export failed. See console for details.');
+      }
+      svgBtn.textContent = 'SVG';
+      svgBtn.disabled = false;
+    });
+  }
+
+  // Legend panel resize via right-edge drag
+  const resizeHandle = document.getElementById('citracer-legend-resize');
+  const legendPanel = document.getElementById('citracer-legend');
+  if (resizeHandle && legendPanel) {
+    // Position the fixed handle at the right edge of the panel
+    function syncHandle() {
+      const rect = legendPanel.getBoundingClientRect();
+      resizeHandle.style.left = (rect.right - 4) + 'px';
+    }
+    syncHandle();
+
+    let dragging = false;
+    resizeHandle.addEventListener('mousedown', (ev) => {
+      ev.preventDefault();
+      dragging = true;
+      resizeHandle.classList.add('active');
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    });
+    document.addEventListener('mousemove', (ev) => {
+      if (!dragging) return;
+      const rect = legendPanel.getBoundingClientRect();
+      const newWidth = Math.max(200, Math.min(ev.clientX - rect.left, window.innerWidth * 0.5));
+      legendPanel.style.width = newWidth + 'px';
+      syncHandle();
+    });
+    document.addEventListener('mouseup', () => {
+      if (!dragging) return;
+      dragging = false;
+      resizeHandle.classList.remove('active');
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    });
+    window.addEventListener('resize', syncHandle);
+  }
+
+  // Reset button — clears saved state and reloads the page to start fresh
+  const resetBtn = document.getElementById('citracer-reset');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      if (confirm('Clear saved layout, filters and node positions?')) {
+        clearState();
+        location.reload();
+      }
+    });
+  }
+
+  // --- analytics panel --------------------------------------------------
+  (function populateAnalytics() {
+    const body = document.getElementById('citracer-analytics-body');
+    if (!body || !ANALYTICS.global) return;
+    const g = ANALYTICS.global;
+    let h = '';
+    h += '<div>Density: ' + g.density.toFixed(4) + '</div>';
+    h += '<div>Avg degree: ' + g.avg_degree.toFixed(2) + '</div>';
+    h += '<div>Components: ' + g.connected_components + '</div>';
+    // Pivot papers
+    const pivots = ANALYTICS.pivot_papers || [];
+    if (pivots.length) {
+      h += '<div style="margin-top:6px;font-weight:bold;">Pivot papers (' + pivots.length + ')</div>';
+      pivots.forEach(function(pid) {
+        const d = NODE_DETAILS[pid];
+        if (!d) { h += '<div>' + escapeHtml(pid) + '</div>'; return; }
+        const authors = (d.authors && d.authors.length) ? d.authors[0].split(' ').pop() + (d.authors.length > 1 ? ' et al.' : '') : '';
+        const title = d.title || '';
+        const label = (authors ? authors + ' - ' : '') + title + (d.year ? ' (' + d.year + ')' : '');
+        h += '<div class="citracer-pivot-link" data-node-id="' + escapeHtml(pid) + '" '
+           + 'style="cursor:pointer;color:#1f77b4;text-decoration:underline;margin:2px 0;'
+           + 'overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;" '
+           + 'title="' + escapeHtml(label) + '">'
+           + escapeHtml(label) + '</div>';
+      });
+    }
+    // Timeline
+    const tl = ANALYTICS.timeline || [];
+    if (tl.length) {
+      h += '<div style="margin-top:6px;font-weight:bold;">Keyword density by year</div>';
+      h += '<table style="font-size:10px;width:100%;border-collapse:collapse;">';
+      h += '<tr><th>Year</th><th>Total</th><th>w/ kw</th><th>Density</th></tr>';
+      tl.forEach(function(t) {
+        const pct = (t.keyword_density * 100).toFixed(0) + '%';
+        const bar = '<span style="display:inline-block;width:' + Math.round(t.keyword_density * 50)
+                   + 'px;height:8px;background:#2ca02c;vertical-align:middle;"></span>';
+        h += '<tr><td>' + t.year + '</td><td>' + t.total + '</td><td>' + t.with_keyword
+           + '</td><td>' + pct + ' ' + bar + '</td></tr>';
+      });
+      h += '</table>';
+    }
+    body.innerHTML = h;
+    // Click on pivot paper -> focus node
+    body.querySelectorAll('.citracer-pivot-link').forEach(function(el) {
+      el.addEventListener('click', function() {
+        const nid = this.getAttribute('data-node-id');
+        if (network) {
+          network.focus(nid, { scale: 1.2, animation: true });
+          network.selectNodes([nid]);
+          showInfo(nid);
+        }
+      });
+    });
+  })();
+
+  // --- search box ------------------------------------------------------
+  function runSearch(query) {
+    const results = document.getElementById('citracer-search-results');
+    if (!results) return;
+    results.innerHTML = '';
+    if (!query || query.length < 2) return;
+    const q = query.toLowerCase();
+    const matches = [];
+    for (const id in NODE_DETAILS) {
+      const d = NODE_DETAILS[id];
+      const title = (d.title || '').toLowerCase();
+      const authors = (d.authors || []).join(' ').toLowerCase();
+      let score = 0;
+      if (title.includes(q)) score += 10;
+      if (authors.includes(q)) score += 5;
+      if (score > 0) matches.push({ id: id, score: score, d: d });
+    }
+    matches.sort((a, b) => b.score - a.score);
+    matches.slice(0, 8).forEach(m => {
+      const div = document.createElement('div');
+      div.className = 'result';
+      const shortTitle = (m.d.title || '').slice(0, 70)
+                      + ((m.d.title || '').length > 70 ? '…' : '');
+      const firstAuthor = (m.d.authors || [])[0] || '';
+      div.innerHTML = '<div class="result-title">' + escapeHtml(shortTitle) + '</div>'
+                    + '<div class="result-meta">'
+                    + escapeHtml(firstAuthor)
+                    + (m.d.year ? ' · ' + m.d.year : '')
+                    + '</div>';
+      div.addEventListener('click', () => {
+        if (typeof network !== 'undefined' && network) {
+          network.focus(m.id, {
+            scale: 1.3,
+            animation: { duration: 400, easingFunction: 'easeInOutQuad' },
+          });
+          network.selectNodes([m.id]);
+          showInfo(m.id);
+          setPinned(m.id);
+        }
+      });
+      results.appendChild(div);
+    });
+  }
+  const searchBox = document.getElementById('citracer-search');
+  if (searchBox) {
+    let debounce = null;
+    searchBox.addEventListener('input', (ev) => {
+      clearTimeout(debounce);
+      debounce = setTimeout(() => runSearch(ev.target.value), 120);
+    });
+    // Enter → focus the first result
+    searchBox.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') {
+        const first = document.querySelector('.citracer-search-results .result');
+        if (first) first.click();
+      }
+    });
+  }
+
+  // Cache of original (borderWidth, color) pairs so we can restore a node's
+  // look when it gets unpinned.
+  const pinRestore = new Map();
+
+  function setPinned(nodeId) {
+    // Restore the previously pinned node, if any.
+    if (pinnedNodeId && pinnedNodeId !== nodeId) {
+      const saved = pinRestore.get(pinnedNodeId);
+      if (saved) {
+        nodes.update({
+          id: pinnedNodeId,
+          borderWidth: saved.borderWidth,
+          color: saved.color,
+        });
+        pinRestore.delete(pinnedNodeId);
+      }
+    }
+    pinnedNodeId = nodeId;
+    const panel = document.getElementById('citracer-info');
+    if (nodeId) {
+      // Cache the current look and apply the pinned look.
+      const n = nodes.get(nodeId);
+      if (n && !pinRestore.has(nodeId)) {
+        pinRestore.set(nodeId, {
+          borderWidth: n.borderWidth || 1,
+          color: n.color,
+        });
+      }
+      const baseBg = (n && n.color && n.color.background) || '#ffffff';
+      nodes.update({
+        id: nodeId,
+        borderWidth: 5,
+        color: {
+          background: baseBg,
+          border: '#06c',
+          highlight: { background: baseBg, border: '#06c' },
+          hover: { background: baseBg, border: '#06c' },
+        },
+      });
+      panel.classList.add('pinned');
+    } else {
+      panel.classList.remove('pinned');
+    }
+  }
+
+  // --- context menu --------------------------------------------------
+  let contextMenuNodeId = null;
+
+  function openContextMenu(nodeId, clientX, clientY) {
+    contextMenuNodeId = nodeId;
+    const menu = document.getElementById('citracer-context-menu');
+    if (!menu) return;
+    const d = NODE_DETAILS[nodeId] || {};
+    // Toggle the "Open link" row — hide it when there's no URL
+    const openItem = menu.querySelector('[data-action="open"]');
+    if (openItem) openItem.style.display = d.url ? '' : 'none';
+    // Toggle "Supply PDF" — only for unavailable nodes
+    const supplyItem = menu.querySelector('[data-action="supply"]');
+    if (supplyItem) supplyItem.style.display = d.status === 'unavailable' ? '' : 'none';
+    // Toggle Pin label
+    const pinItem = menu.querySelector('[data-action="pin"]');
+    if (pinItem) pinItem.textContent = (pinnedNodeId === nodeId) ? 'Unpin' : 'Pin';
+    menu.style.display = 'block';
+    // Clamp to viewport
+    const menuRect = menu.getBoundingClientRect();
+    const maxX = window.innerWidth - menuRect.width - 6;
+    const maxY = window.innerHeight - menuRect.height - 6;
+    menu.style.left = Math.min(clientX, maxX) + 'px';
+    menu.style.top  = Math.min(clientY, maxY) + 'px';
+  }
+
+  function closeContextMenu() {
+    const menu = document.getElementById('citracer-context-menu');
+    if (menu) menu.style.display = 'none';
+    contextMenuNodeId = null;
+  }
+
+  document.getElementById('citracer-context-menu').addEventListener('click', (ev) => {
+    const item = ev.target.closest('.ctx-item');
+    if (!item || !contextMenuNodeId) return;
+    const action = item.getAttribute('data-action');
+    const nodeId = contextMenuNodeId;
+    const d = NODE_DETAILS[nodeId] || {};
+    if (action === 'hide') {
+      manuallyHidden.add(nodeId);
+      if (pinnedNodeId === nodeId) {
+        setPinned(null);
+        document.getElementById('citracer-info').style.display = 'none';
+      }
+      applyFilter();
+      saveState();
+    } else if (action === 'pin') {
+      if (pinnedNodeId === nodeId) {
+        setPinned(null);
+      } else {
+        showInfo(nodeId);
+        setPinned(nodeId);
+      }
+      saveState();
+    } else if (action === 'open') {
+      if (d.url) window.open(d.url, '_blank');
+    } else if (action === 'supply') {
+      const input = prompt(
+        'Enter a local path or URL to the PDF for:\n'
+        + (d.title || nodeId) + '\n\n'
+        + 'Example: ~/papers/paper.pdf or https://example.com/paper.pdf'
+      );
+      if (input && input.trim()) {
+        _supplyPdfEntries.push({ id: nodeId, path: input.trim() });
+        _updateSupplyBanner();
+      }
+    }
+    closeContextMenu();
+  });
+
+  // --- Supply PDF banner ---
+  const _supplyPdfEntries = [];
+
+  function _updateSupplyBanner() {
+    const banner = document.getElementById('citracer-supply-banner');
+    const cmd = document.getElementById('citracer-supply-cmd');
+    if (!banner || !cmd || !_supplyPdfEntries.length) return;
+    const parts = _supplyPdfEntries.map(e =>
+      '--supply-pdf "' + e.id + '=' + e.path + '"'
+    );
+    cmd.textContent = parts.join(' \\\n  ');
+    banner.style.display = 'block';
+  }
+
+  // Click to copy
+  const supplyCmd = document.getElementById('citracer-supply-cmd');
+  if (supplyCmd) {
+    supplyCmd.addEventListener('click', () => {
+      const text = supplyCmd.textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = supplyCmd.style.outline;
+        supplyCmd.style.outline = '2px solid #6cf';
+        setTimeout(() => { supplyCmd.style.outline = orig; }, 600);
+      });
+    });
+  }
+
+  // Dismiss banner
+  const supplyClose = document.getElementById('citracer-supply-close');
+  if (supplyClose) {
+    supplyClose.addEventListener('click', () => {
+      document.getElementById('citracer-supply-banner').style.display = 'none';
+    });
+  }
+
+  // Dismiss context menu on any outside click or Escape
+  document.addEventListener('click', (ev) => {
+    const menu = document.getElementById('citracer-context-menu');
+    if (menu && !menu.contains(ev.target)) closeContextMenu();
+  });
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape') closeContextMenu();
+  });
+
+  // "show N manually hidden" banner → restore all
+  const hiddenBanner = document.getElementById('citracer-hidden-banner');
+  if (hiddenBanner) {
+    hiddenBanner.addEventListener('click', () => {
+      manuallyHidden.clear();
+      applyFilter();
+      saveState();
+    });
+  }
+
+  // Info panel close button (×) — unpins and hides the panel
+  const infoClose = document.getElementById('citracer-info-close');
+  if (infoClose) {
+    infoClose.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      setPinned(null);
+      currentNodeId = null;
+      document.getElementById('citracer-info').style.display = 'none';
+      saveState();
+    });
+  }
+
+  // Wait for the network to be created by pyvis, then wire events.
+  function tryAttach() {
+    if (typeof network !== 'undefined' && network) {
+      const saved = loadState();
+      if (saved) {
+        // Non-position state first, so applyFilter() sees correct toggles
+        applyLoadedState(saved);
+        stateLoaded = true;
+      }
+
+      // If we have saved positions, bypass the Sugiyama layout entirely
+      // and snap nodes back where the user left them. Otherwise run the
+      // normal "let hierarchical lay it out, then release" dance.
+      if (saved && saved.positions && Object.keys(saved.positions).length) {
+        network.setOptions({
+          layout: { hierarchical: { enabled: false } },
+          physics: { enabled: false },
+        });
+        const moveUpdates = [];
+        for (const id in saved.positions) {
+          const p = saved.positions[id];
+          if (p && typeof p.x === 'number' && typeof p.y === 'number') {
+            moveUpdates.push({ id: id, x: p.x, y: p.y });
+          }
+        }
+        if (moveUpdates.length) nodes.update(moveUpdates);
+        setTimeout(() => network.fit(), 0);
+        const reset = document.getElementById('citracer-reset');
+        if (reset) reset.classList.add('saved');
+      } else {
+        switchLayout(currentLayout);
+      }
+
+      // Enforce edge smooth/straight setting (especially important when
+      // restoring state where the user had straight edges enabled).
+      applyCurvedEdges();
+
+      // Live update on hover (ignored while pinned)
+      network.on('hoverNode', params => {
+        if (pinnedNodeId) return;
+        showInfo(params.node);
+      });
+      // Click on a node: pin it (or unpin if already pinned). A click on
+      // the empty canvas is deliberately a no-op — the pin survives until
+      // the user either clicks the pinned node again, presses the X on
+      // the info panel, or picks Unpin from the right-click menu.
+      network.on('click', params => {
+        closeContextMenu();
+        if (!(params.nodes && params.nodes.length)) return;
+        const id = params.nodes[0];
+        if (pinnedNodeId === id) {
+          setPinned(null);
+          currentNodeId = null;
+          document.getElementById('citracer-info').style.display = 'none';
+        } else {
+          showInfo(id);
+          setPinned(id);
+        }
+        saveState();
+      });
+
+      // Right-click on a node = context menu
+      network.on('oncontext', params => {
+        // Always suppress the browser's native menu on the canvas
+        if (params.event) params.event.preventDefault();
+        const clicked = network.getNodeAt(params.pointer.DOM);
+        if (clicked) {
+          openContextMenu(clicked, params.event.clientX, params.event.clientY);
+        } else {
+          closeContextMenu();
+        }
+      });
+
+      // Persist positions after the user finishes dragging a node
+      network.on('dragEnd', () => saveState());
+
+      applyFilter();
+
+      // Re-apply pinned state AFTER applyFilter (which resizes nodes, which
+      // can reset the border style we use for the pin indicator)
+      if (saved && saved.pinned && NODE_DETAILS[saved.pinned]) {
+        showInfo(saved.pinned);
+        setPinned(saved.pinned);
+      }
+      return true;
+    }
+    return false;
+  }
+  if (!tryAttach()) {
+    const t = setInterval(() => { if (tryAttach()) clearInterval(t); }, 200);
+  }
+
+  // Ctrl+Z / Ctrl+Y (or Ctrl+Shift+Z) for undo/redo
+  document.addEventListener('keydown', (ev) => {
+    // Don't intercept when typing in an input/textarea
+    if (ev.target.tagName === 'INPUT' || ev.target.tagName === 'TEXTAREA') return;
+    if (ev.ctrlKey || ev.metaKey) {
+      if (ev.key === 'z' && !ev.shiftKey) {
+        ev.preventDefault();
+        undo();
+      } else if (ev.key === 'y' || (ev.key === 'z' && ev.shiftKey)) {
+        ev.preventDefault();
+        redo();
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>
