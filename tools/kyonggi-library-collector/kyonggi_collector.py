@@ -8,6 +8,7 @@ bibliographic metadata from result pages.
 from __future__ import annotations
 
 import argparse
+import base64
 import csv
 import getpass
 import http.cookiejar
@@ -52,7 +53,7 @@ def profile_dir() -> Path:
     return Path.home() / ".kyonggi-library-collector" / "chrome-profile"
 
 
-def build_driver(profile: Path):
+def build_driver(profile: Path, *, reuse_open: bool = False):
     try:
         from selenium import webdriver
         from selenium.webdriver.chrome.options import Options
@@ -60,6 +61,13 @@ def build_driver(profile: Path):
         raise SystemExit("Selenium is missing. Run: pip install -r requirements.txt") from exc
 
     options = Options()
+    if reuse_open:
+        port_file = profile / "DevToolsActivePort"
+        if not port_file.is_file():
+            raise SystemExit("The collector's signed-in Chrome window is not open.")
+        port = int(port_file.read_text(encoding="utf-8").splitlines()[0])
+        options.debugger_address = f"127.0.0.1:{port}"
+        return webdriver.Chrome(options=options)
     options.add_argument(f"--user-data-dir={profile}")
     options.add_argument("--new-window")
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
@@ -750,6 +758,11 @@ def click_visible_pdf_control(driver: object) -> dict[str, str] | None:
     """
     from selenium.webdriver.common.by import By
 
+    for selector in ("a.xpl-btn-pdf[href*='/stamp/']", "a[href*='/stamp/stamp.jsp']"):
+        for button in driver.find_elements(By.CSS_SELECTOR, selector):
+            if button.is_displayed() and button.is_enabled():
+                button.click()
+                return {"text": "IEEE PDF"}
     candidates: list[tuple[int, object, dict[str, str]]] = []
     for element in driver.find_elements(By.CSS_SELECTOR, "a[href], button, input[type='button'], input[type='submit']"):
         try:
@@ -779,7 +792,7 @@ def click_visible_pdf_control(driver: object) -> dict[str, str] | None:
                 score += 50
             if re.search(r"download|다운로드", text):
                 score += 40
-            if element.tag_name.lower() == "a":
+            if score and element.tag_name.lower() == "a":
                 score += 2
             if score:
                 candidates.append((score, element, {"text": text[:200], "href": href[:500]}))
@@ -797,12 +810,62 @@ def click_visible_pdf_control(driver: object) -> dict[str, str] | None:
         return None
 
 
+def save_ieee_viewer_pdf(driver, target):
+    """Download the PDF already displayed by IEEE in this authenticated tab."""
+    current = urlparse(driver.current_url)
+    if current.hostname not in {"ieeexplore-ieee-org-ssl.libproxy.kyonggi.ac.kr", "ieeexplore.ieee.org"}:
+        return False
+    if current.path != "/stamp/stamp.jsp":
+        return False
+    driver.set_script_timeout(22)
+    result = driver.execute_async_script("""
+        const done = arguments[0];
+        const frame = document.querySelector('iframe[src*="/stampPDF/getPDF.jsp"]');
+        if (!frame || new URL(frame.src).origin !== location.origin) {
+            done({error: "PDF viewer frame not found"});
+            return;
+        }
+        fetch(frame.src, {credentials:"same-origin", mode:"same-origin",
+                         signal:AbortSignal.timeout(18000)})
+          .then(async response => {
+            if (!response.ok) throw new Error("HTTP " + response.status);
+            const blob = await response.blob();
+            if (blob.size > 50 * 1024 * 1024) throw new Error("PDF exceeds 50 MiB");
+            if (await blob.slice(0,5).text() !== "%PDF-") throw new Error("Response is not a PDF");
+            const reader = new FileReader();
+            reader.onload = () => done({data:reader.result.split(",", 2)[1]});
+            reader.onerror = () => done({error:"PDF read failed"});
+            reader.readAsDataURL(blob);
+          }).catch(error => done({error:error.message}));
+    """)
+    if not result.get("data"):
+        raise ValueError(result.get("error", "PDF viewer did not produce a file"))
+    target.write_bytes(base64.b64decode(result["data"], validate=True))
+    return True
+
+
+def validate_downloads(paths, record):
+    from pdf_handoff import verify_pdf
+
+    verified, rejected = [], []
+    for path in paths:
+        try:
+            verify_pdf(path, record)
+        except (OSError, ValueError, RuntimeError) as error:
+            rejected.append(str(error))
+        else:
+            verified.append(path)
+    return verified, rejected
+
+
 def automatic_institution_downloads(args: argparse.Namespace) -> int:
     """Navigate institutional links and click only visible PDF/download controls.
 
     The account owner performs login in Chrome.  This routine never receives
     credentials and never attempts CAPTCHA, paywall, or access-control bypass.
     """
+    from selenium.common.exceptions import NoSuchWindowException
+
     records_path = Path(args.records)
     if not records_path.is_file():
         raise SystemExit(f"records file not found: {records_path}")
@@ -814,16 +877,34 @@ def automatic_institution_downloads(args: argparse.Namespace) -> int:
     export_priority_selection(ranked_records, target, args.priority)
     records = ranked_records[args.start_index : args.start_index + args.max_records]
     ledger_path = target / "institution_auto_download_ledger.jsonl"
-    driver = build_driver(profile_dir())
+    completed = set()
+    if ledger_path.exists():
+        for line in ledger_path.read_text(encoding="utf-8").splitlines():
+            previous = json.loads(line)
+            if previous.get("status") == "downloaded_verified" and all(
+                (pdf_dir / name).is_file() for name in previous.get("files", [])
+            ):
+                completed.add(previous["candidate_id"])
+    driver = build_driver(profile_dir(), reuse_open=args.reuse_open_chrome)
+    prior_tab = driver.current_window_handle
+    if args.reuse_open_chrome:
+        driver.switch_to.new_window("tab")
+    work_tab = driver.current_window_handle
+    driver.set_page_load_timeout(30)
     driver.execute_cdp_cmd("Page.setDownloadBehavior", {"behavior": "allow", "downloadPath": str(pdf_dir.resolve())})
-    driver.get(args.library_home)
-    print("Chrome opened. Log in to Kyonggi Library/libproxy in this window.")
-    input("After login is complete, press Enter here to automatically process the listed links: ")
-    saved = 0
+    if not args.reuse_open_chrome:
+        driver.get(args.library_home)
+        print("Chrome opened. Log in to Kyonggi Library/libproxy in this window.")
+        input("After login is complete, press Enter here: ")
+    saved = len(completed)
     processed = 0
     try:
-        with ledger_path.open("w", encoding="utf-8") as ledger:
+        with ledger_path.open("a", encoding="utf-8") as ledger:
             for index, record in enumerate(records, start=args.start_index + 1):
+                if args.target_downloads is not None and saved >= args.target_downloads:
+                    break
+                if record.get("candidate_id") in completed:
+                    continue
                 link = str(record.get("fulltext_url") or "")
                 entry = {
                     "candidate_id": record.get("candidate_id"),
@@ -838,38 +919,77 @@ def automatic_institution_downloads(args: argparse.Namespace) -> int:
                     entry["status"] = "skipped_no_institutional_link"
                 else:
                     before = {item.name for item in pdf_dir.glob("*.pdf")}
+                    opened_pdf_tab = None
                     try:
                         driver.get(link)
                         time.sleep(args.page_wait_seconds)
-                        direct = newly_saved_pdfs(pdf_dir, before, 2)
-                        if direct:
-                            entry["status"] = "downloaded_after_opening_link"
-                            entry["files"] = [item.name for item in direct]
-                            entry["bytes"] = sum(item.stat().st_size for item in direct)
-                            saved += len(direct)
-                        else:
+                        viewer_file = pdf_dir / pdf_filename(record)
+                        added = newly_saved_pdfs(pdf_dir, before, 1)
+                        if not added and viewer_file.name not in before and save_ieee_viewer_pdf(driver, viewer_file):
+                            added = [viewer_file]
+                        if not added:
+                            known_tabs = set(driver.window_handles)
                             control = click_visible_pdf_control(driver)
-                            if control is None:
-                                entry["status"] = "no_visible_pdf_or_download_control"
-                            else:
+                            if control is not None:
                                 entry["clicked_control"] = control
-                                added = newly_saved_pdfs(pdf_dir, before, args.download_wait_seconds)
-                                if added:
-                                    entry["status"] = "downloaded_after_visible_control"
-                                    entry["files"] = [item.name for item in added]
-                                    entry["bytes"] = sum(item.stat().st_size for item in added)
-                                    saved += len(added)
+                                time.sleep(args.page_wait_seconds)
+                                new_tabs = set(driver.window_handles) - known_tabs
+                                if len(new_tabs) == 1:
+                                    opened_pdf_tab = new_tabs.pop()
+                                    driver.switch_to.window(opened_pdf_tab)
+                                if viewer_file.name not in before and save_ieee_viewer_pdf(driver, viewer_file):
+                                    added = [viewer_file]
                                 else:
-                                    entry["status"] = "visible_control_clicked_no_pdf_saved"
+                                    added = newly_saved_pdfs(pdf_dir, before, args.download_wait_seconds)
+                        verified, rejected = validate_downloads(added, record)
+                        if rejected:
+                            entry["rejected"] = rejected
+                        if len(verified) == 1:
+                            item = verified[0]
+                            entry.update(status="downloaded_verified", files=[item.name], bytes=item.stat().st_size)
+                            saved += 1
+                        elif verified:
+                            entry["status"] = "ambiguous_multiple_verified_pdfs"
+                        else:
+                            entry["status"] = "no_verified_pdf"
                     except Exception as exc:
                         entry["status"] = f"failed_{type(exc).__name__}"
+                        if isinstance(exc, ValueError):
+                            entry["reason"] = str(exc)
+                    finally:
+                        if opened_pdf_tab and opened_pdf_tab in driver.window_handles:
+                            try:
+                                driver.switch_to.window(opened_pdf_tab)
+                                driver.close()
+                            except NoSuchWindowException:
+                                pass
+                        handles = driver.window_handles
+                        if work_tab in handles:
+                            driver.switch_to.window(work_tab)
+                        elif handles:
+                            driver.switch_to.window(handles[0])
+                            driver.switch_to.new_window("tab")
+                            work_tab = driver.current_window_handle
+                            driver.execute_cdp_cmd("Page.setDownloadBehavior", {"behavior": "allow", "downloadPath": str(pdf_dir.resolve())})
                 processed += 1
                 ledger.write(json.dumps(entry, ensure_ascii=False) + "\n")
                 ledger.flush()
                 print(f"Processed {processed}/{len(records)} links; PDFs saved: {saved}", flush=True)
+                if args.target_downloads is not None and saved >= args.target_downloads:
+                    break
                 time.sleep(args.delay_seconds)
     finally:
-        driver.quit()
+        if args.reuse_open_chrome:
+            if work_tab in driver.window_handles:
+                try:
+                    driver.switch_to.window(work_tab)
+                    driver.close()
+                except NoSuchWindowException:
+                    pass
+            if prior_tab in driver.window_handles:
+                driver.switch_to.window(prior_tab)
+        else:
+            driver.quit()
     manifest = {
         "tool": "kyonggi-library-collector",
         "mode": "automatic-visible-institution-download",
@@ -877,10 +997,14 @@ def automatic_institution_downloads(args: argparse.Namespace) -> int:
         "source_records": str(records_path),
         "processed_records": processed,
         "pdfs_saved": saved,
-        "boundary": "The account owner logged in in Chrome. The tool only clicked a visible PDF/download control once per page; it did not receive credentials or bypass CAPTCHA, paywalls, licensing, or access controls.",
+        "target_downloads": args.target_downloads,
+        "boundary": "The user signs in in Chrome. The tool follows visible PDF controls and saves an IEEE PDF displayed in the same session.",
     }
     (target / "institution_auto_download_manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Complete: {saved} PDFs -> {pdf_dir.resolve()}")
+    if args.target_downloads is not None and saved < args.target_downloads:
+        print(f"Target not reached: {saved}/{args.target_downloads} verified PDFs.", file=sys.stderr)
+        return 2
     return 0
 
 
@@ -915,7 +1039,7 @@ def parser() -> argparse.ArgumentParser:
     i.add_argument("--max-records", type=int, default=100)
     i.add_argument("--start-index", type=int, default=0)
     i.add_argument("--download-wait-seconds", type=int, default=20, help="Wait after user confirmation for Chrome to finish a PDF")
-    a = sub.add_parser("auto-downloads", help="After manual login, open links and click one visible PDF/download control per provider page")
+    a = sub.add_parser("auto-downloads", help="After manual login, download and verify PDFs from institutional links")
     a.add_argument("--records", required=True, help="Path to records.jsonl produced by collect")
     a.add_argument("--output-dir", required=True, help="Directory for downloaded PDFs and ledger")
     a.add_argument("--library-home", default=LIBRARY_HOME)
@@ -924,6 +1048,8 @@ def parser() -> argparse.ArgumentParser:
     a.add_argument("--page-wait-seconds", type=int, default=3)
     a.add_argument("--download-wait-seconds", type=int, default=20)
     a.add_argument("--delay-seconds", type=float, default=1.0)
+    a.add_argument("--reuse-open-chrome", action="store_true", help="Reuse the collector's already signed-in Chrome")
+    a.add_argument("--target-downloads", type=int, help="Stop after this many verified PDFs")
     a.add_argument("--priority", choices=("top-tier", "source-order"), default="top-tier", help="top-tier ranks recognized security venues and reputable journals before general results")
     return p
 
@@ -939,6 +1065,8 @@ def main() -> int:
             raise SystemExit("Review download limits must be positive.")
         return browser_assisted_downloads(args)
     if args.command == "auto-downloads":
+        if args.target_downloads is not None and args.target_downloads < 1:
+            raise SystemExit("target-downloads must be positive.")
         if args.max_records < 1 or args.start_index < 0 or args.download_wait_seconds < 1 or args.page_wait_seconds < 0 or args.delay_seconds < 0:
             raise SystemExit("Automatic download limits must be positive (wait and delay values may be zero where applicable).")
         return automatic_institution_downloads(args)

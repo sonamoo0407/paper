@@ -7,3 +7,9 @@ __pycache__/
 *.egg-info/
 runs/
 .env
+inbox/
+paper-inbox/
+chrome-profile/
+.pdf-staging-*/
+*.crdownload
+node_modules/

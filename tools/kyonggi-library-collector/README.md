@@ -81,18 +81,38 @@ python kyonggi_collector.py review-downloads `
 
 다운로드한 파일은 `institution-downloads\institution_downloads`에, 항목별 결과는 `institution_download_ledger.jsonl`에 남는다. 페이지를 열어 둔 상태에서 다운로드한 뒤 터미널에서 Enter를 누르면 파일을 확인하고 다음 항목으로 이동한다. `s`는 건너뛰기, `q`는 중단이다.
 
-로그인 뒤 보이는 PDF/다운로드 버튼까지 자동으로 시도하려면 아래 모드를 쓴다. 각 링크에서 **보이는 PDF 또는 다운로드 제어 하나만** 누르고, 파일이 저장되지 않으면 장부에 남긴 뒤 다음 링크로 넘어간다. 제공처별 화면이 달라 100% 성공을 보장하지는 않지만, HTML·로그인·구매 버튼은 제외한다. 로그인·2차 인증·CAPTCHA는 사용자가 Chrome에서 직접 완료해야 한다. 기본값은 `top-tier` 우선순위라 보안 최상위 학회·저널 → 검증된 보안 저널 → IEEE/ACM·일반 학술 출처 → 나머지 순서로 먼저 시도한다.
+로그인 뒤 자동으로 받으려면 아래 모드를 쓴다. 수집기는 제공처의 PDF 버튼을 열고, IEEE 뷰어에서는 현재 로그인 세션에 표시된 PDF를 저장한다. 저장한 파일의 제목 또는 DOI를 확인해 통과본만 다운로드 목표에 센다. 실패는 장부에 기록하고 다음 후보를 시도한다. 로그인·2차 인증·CAPTCHA는 사용자가 Chrome에서 완료한다. 기본값인 `top-tier`는 보안 학회와 저널을 우선 검토한다.
 
 ```powershell
 python kyonggi_collector.py auto-downloads `
   --records ".\outputs\<수집폴더>\records.jsonl" `
   --output-dir ".\outputs\<수집폴더>\institution-auto-downloads" `
-  --max-records 100
+  --max-records 200 --target-downloads 100
 ```
+
+위 예시는 최대 200개 후보에서 검증된 PDF 100편을 목표로 한다. 수집기 전용 Chrome이 열려 있고 이미 로그인되어 있으면 `--reuse-open-chrome`을 붙여 현재 세션에서 이어간다.
 
 결과 PDF는 `institution-auto-downloads\institution_downloads`, 성공·실패 사유는 `institution_auto_download_ledger.jsonl`에 저장된다. 실행 중에는 Chrome 창을 닫지 말고, 문제가 있는 제공처는 프로그램을 `Ctrl+C`로 멈춘 뒤 `--start-index`로 이어서 실행한다.
 
 정렬 결과와 근거는 실행 전에 `priority_selection.csv`와 `priority_selection.jsonl`로 저장된다. 이는 EDS 메타데이터 기반의 투명한 휴리스틱이며, 공식 JCR·Scopus·SJR 사분위 등급이라고 주장하지 않는다. 정렬하지 않고 EDS 원래 순서대로 하려면 명령 끝에 `--priority source-order`를 더한다.
+
+## Windows에서 받은 PDF를 Ubuntu로 인계
+
+Windows Chrome에서 수집과 기관 로그인을 진행한다. 첫 확인은 `review-downloads --max-records 3`으로 실행하고, 각 후보의 PDF를 다운로드한 뒤 터미널에서 Enter를 눌러 장부에 기록한다. 수집 장부와 다운로드 장부에서 같은 실행의 파일을 지정한다.
+
+```powershell
+python pdf_handoff.py stage "<수집폴더>\records.jsonl" "<다운로드폴더>\institution_download_ledger.jsonl" "<Windows paper-inbox>\<실행 ID>"
+```
+
+인계 폴더에는 완료된 PDF와 `records.jsonl`이 생긴다. 논문 제목 또는 DOI를 PDF 첫 페이지에서 확인하고 SHA-256을 기록한다. 일치가 확인되지 않거나 후보와 파일이 여러 개로 연결되면 해당 파일은 보류로 출력한다.
+
+VMware에는 Windows의 `paper-inbox`를 Ubuntu에서 읽는 공유 폴더로 추가한다. Ubuntu에서 같은 수집기 소스를 사용해 공유본을 검증한다.
+
+```bash
+python3 pdf_handoff.py verify "/mnt/hgfs/paper-inbox/<실행 ID>"
+```
+
+검증된 입력을 Ubuntu의 `ROOT_PAPER_IMPORT` 아래 실행 폴더로 복사한다. `preserve_pdf`에 장부의 후보 ID와 PDF 경로를 전달해 보존한 뒤, 해당 실행의 인용 추적과 그래프 검수를 이어간다. `.pdf-staging-*` 폴더는 Windows에서 쓰는 중인 파일이므로 완성된 실행 ID 폴더를 입력으로 사용한다.
 
 ## 토큰 없는 로컬 분석 전처리
 
@@ -125,7 +145,9 @@ python local_research_pipeline.py graph `
 
 이 결과를 Hermes에 넘길 때는 `selected_candidates.jsonl`, `pdf_extraction.jsonl`, `citation_graph.json`과 실제 PDF만 전달하면 된다. LLM은 그 이후의 연구적 해석·비교·최종 채택 근거 작성에만 사용한다.
 
-현재 수집한 ransomware 100건을 편하게 처리하려면 `run_auto_downloads.bat`를 더블클릭한다. `How many records should be processed?`에서 이번에 받을 개수만 입력한다. 예를 들어 `10`을 입력하면 첫 10개만, `30`을 입력하면 첫 30개만 처리한다.
+`run_auto_downloads.bat`를 실행하면 사용할 `records.jsonl` 경로와 처리할 후보 수를 입력한다. 명령줄 첫 인자로 장부 경로를 전달할 수도 있다. `How many records should be processed?`는 처리할 후보 수이며 실제 다운로드 성공 건수는 실행 장부로 확인한다. 검증된 PDF 목표 건수로 종료하려면 `auto-downloads --target-downloads 100`을 사용하고 `--max-records`에 탐색할 후보 상한을 지정한다.
+
+`--reuse-open-chrome`은 이 수집기의 전용 프로필로 이미 열린 Chrome에 연결해 로그인 세션을 이어간다. PDF 뷰어를 기다리는 기본 시간은 3초이며 `--page-wait-seconds`로 설정한다. IEEE 뷰어에서 같은 출처의 PDF 응답을 저장하고 첫 페이지 제목 또는 DOI와 파일 상태를 검증한다. 완료 장부를 재사용하며 목표 건수에 미달하면 종료 코드 2를 반환한다.
 
 `--auto-login`이 로그인 폼을 찾지 못하면, 해당 DB의 로그인 주소·CSS 선택자를 지정할 수 있다. 비밀번호는 절대로 인자로 넣지 않는다.
 

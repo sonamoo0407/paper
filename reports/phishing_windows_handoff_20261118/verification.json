@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-18",
+  "batch_id": "20261117T135121Z_phishing_detection",
+  "html_sha256": "8a079bf53040b1af5558134f80f261e245ed2ffd39b2f879dc82c479c1e7ea99",
+  "html_bytes": 5700193,
+  "nodes": 421,
+  "unique_directed_edges": 419,
+  "edge_evidence_panels": 419,
+  "r1_nodes": 30,
+  "year_known_nodes": 170,
+  "isolated_r1_nodes": 11,
+  "context_distribution": {
+    "background_or_introduction": 310,
+    "context_held": 77,
+    "limitation_or_critique": 10,
+    "comparison_or_validation": 22
+  },
+  "windows_static_validation": "passed",
+  "ubuntu_pointer_validation": "Hermes reported PASS for node and R1-R2/R2-R3 edge pointer clicks; raw VM QA ledger not copied",
+  "windows_independent_ui_validation": "not performed; local-file browser policy",
+  "vm_runtime_source_backup": "pending; SSH authentication failed and Discord needs re-login"
+}

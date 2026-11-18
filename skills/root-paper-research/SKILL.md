@@ -6,6 +6,8 @@ description: AI 또는 사이버보안 논문 검색, 참고문헌 추적, 공�
 # 연구 보조 운영 규칙
 
 중간 논문 후보를 해석하거나 본문 인용 목적을 평가할 때는 [인용 문맥 채점 규칙](CITATION_CONTEXT_RULES.md)을 적용한다.
+최종 HTML 인용 그래프를 생성하거나 수정할 때는 [citracer 기반 그래프 지침](CITATION_GRAPH_RULES.md)을 적용한다.
+논문 수집부터 산출물까지 요청받으면 [1사이클 실행 지침](FULL_CYCLE_RULES.md)을 적용한다.
 
 ## 언제 사용
 
